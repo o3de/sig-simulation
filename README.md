@@ -1,2 +1,2 @@
 # sig-simulation
-Special Interest Groupe for Simulation
+Special Interest Group for Simulation
