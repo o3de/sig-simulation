@@ -1,4 +1,4 @@
-# SIG Simulation Charter
+# SIG-Simulation Charter
 
 This charter adheres to the Roles and Organization Management specified by the [O3DE Foundation](https://github.com/o3de/community). Team information may be found in the [README](../README.md).
 
