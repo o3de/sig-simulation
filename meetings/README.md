@@ -1,4 +1,4 @@
-# O3DE Simulation SIG - Meetings
+# SIG-Simulation Meetings
 
 ## Meetings
 
