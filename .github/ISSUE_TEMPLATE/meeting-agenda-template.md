@@ -8,7 +8,7 @@ assignees: ''
 
 ## Meeting Details
 
-- **Date/Time:** Month Date, Year @ XX:XXpm UTC / XX:XXpm ET
+- **Date/Time:** YYYY/MM/DD @ XX:XX (24-hour) UTC / XX:XX (24-hour) ET / XX:XX (24-hour) PST
 - **Location:** [Discord SIG-Simulation Voice Room](https://discord.gg/QqvyuMAc9g)
 - **Moderator:** TBA
 - **Note Taker** Person
