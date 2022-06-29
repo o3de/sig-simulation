@@ -2,7 +2,7 @@
 
 ## Meetings
 
-Each SIG hosts a regular community meeting to update the community about the progress of the project and the SIG's contribution to the project. It is a recurring event to give everyone a chance to have their voice heard. The SIG holds its meetings each **TBD** , and future meetings are held based on the [agendas on GitHub](https://github.com/o3de/community/issues?q=is%3Aopen+label%3Asig%2Fsimulation+label%3Amtg-agenda).
+Each SIG hosts a regular community meeting to update the community about the progress of the project and the SIG's contribution to the project. It is a recurring event to give everyone a chance to have their voice heard. The SIG holds its meetings each **[Tuesday](https://github.com/o3de/sig-simulation/blob/main/README.md)** , and future meetings are held based on the [agendas on GitHub](https://github.com/o3de/community/issues?q=is%3Aopen+label%3Asig%2Fsimulation+label%3Amtg-agenda).
 
 Please reach out on [Discord](https://discord.gg/6nSYcUBaR3) or [Sign up on the Mailing Lists](https://lists.o3de.org/groups) to get notifications for the recurring events.
 
@@ -22,8 +22,7 @@ Below is a list of all prior completed meetings and related resources.
 
 ## Documentation Special Interest Group
 
-| No   | Date       | Time | Agenda  | Media | Notes | Resources |
-| ---- | ---------- | ---- | ------- | ----- | ----- | ---- |
+Find notes from our previous meetings [here](https://github.com/o3de/sig-simulation/tree/main/meetings/notes).
 
 ## General Resources
 
