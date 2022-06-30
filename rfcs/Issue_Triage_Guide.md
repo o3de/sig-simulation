@@ -29,7 +29,7 @@ SIG-Simulation triages issues once a week on [Thursday](https://lists.o3de.org/g
    1. Review any open issues with [needs-sig](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-sig) that may be for SIG Simulation
         1. Remove `needs-sig` and add `sig/simulation`. These items will now show up when reviewing issues below.    
    2. Process the main repository issues
-        1. [Blocker Issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fcritical%2Cpriority%2Fblocker)
+        1. [Blocker Issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fblocker)
         1. [Critical issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fcritical)
         2. [Major issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fmajor)
         3. [Other issues sorted by age](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation+sort%3Acreated-desc)
