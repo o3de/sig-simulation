@@ -116,7 +116,7 @@ Any project that has the following Gems enabled:
 | Adding joints to a scene and verifying their behavior | <ol><li>Create a follower and leader entity for each [PhysX Joint Type](#PhysX-Joint-Types) under test.</li><ul><li>Follower entity should have PhysX Collider, PhysX Rigid Body, [PhysX Joint Type](#PhysX-Joint-Types), and a Shape (for visibility).</li><li>Lead entity should have a PhysX Collider, Rigid body, and a Shape (for visibility) component.</li></ul></li><li>Set up the follower to move around the joint by setting a velocity on the Rigid Body.</li><li>Set up the Joint to set the Lead entity as the Lead target.</li><li>Set up the Joint Properties under test (EG: breakable, limits).</li><li>Set up the scene so that joints will interact upon themselves or with other collider entities.</li><li>Run the Simulation in Editor Game Mode or in the Game Launcher.</li></ol> | <ul><li>When adding a joint to an Entity without dependent components, joint component will notify and suggest entities to add.</li><li>Joint movements are within expected limits.</li><li>Joints behave as expected when colliding with themselves or other entities.</li></ul> |
 ---
 
-### Area: Rigid Body
+### Area: PhysX Rigid Body
 
 #### Project Requirements
 Any project that has the following Gems enabled: 
