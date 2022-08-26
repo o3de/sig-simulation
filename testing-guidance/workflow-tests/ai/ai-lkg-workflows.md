@@ -215,7 +215,7 @@ Any project that has the following Gems enabled:
 ---
 
 ## New Features, Feature Improvements, Added Coverage for Current LKG
-This section should change for each LKG cycle to target new features, feature area improvements, or an area that has been presenting issues and can use additional coverage in the LKG cycle
+This section should change for each LKG cycle to target new features, feature area improvements, or an area that has been presenting issues and can use additional coverage in the LKG cycle.
 
 Execute the following Workflow Docs:
 * [Physics Blast Materials](physics-blast-materials-workflows.md)
