@@ -1,13 +1,14 @@
-# Physics Workflow Tests
+# Physics LKG Workflow Tests
 
-Testing in this area should focus on the functionality of PhysX Functionality.
+Testing in this area should focus on the Physics functionality found in PhysX and other supported Nv Physics libraries.
 
 ## Common Issues to Watch For
 
 Test guidance will sometimes note specific issues to watch for. The common issues below should be watched for through all testing, even if unrelated to the current workflow being tested.
-- Asset processor errors when loading/saving levels with PhysX Entity Components 
-- Warnings or Errors that appear in the Editor Console Log while setting up scenes 
-- Broken PhysX behaviors 
+- Asset processor errors when loading/saving levels with PhysX Entity Components.
+- Warnings or Errors that appear in the Editor Console Log while setting up scenes. 
+- Broken PhysX behaviors.
+- Colliders not being detected between collider types.
 
 ## Supported Component Variants
 ### PhysX Collider shapes
