@@ -175,7 +175,7 @@ Any project that has the following Gems enabled:
 * Windows
 * Linux
 
-**Docs:** N/A
+**Docs:** [O3DE Nvidia Cloth](https://www.o3de.org/docs/user-guide/components/reference/physx/cloth/)
 
 **Product:** A scene with Nvidia Cloth entities (Mesh/Actor) that dynamically animate when rendered in a simulation.
 
