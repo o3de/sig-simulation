@@ -176,7 +176,7 @@ Any project that has the following Gems enabled:
 
 **Docs:** N/A
 
-**Product:** A scene with Nividia Cloth entities (Mesh/Actor) that dynamically animate when rendered in a simulation.
+**Product:** A scene with Nvidia Cloth entities (Mesh/Actor) that dynamically animate when rendered in a simulation.
 
 **Suggested Time Box:** 60 minutes
 
