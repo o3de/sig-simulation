@@ -38,7 +38,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 * Fixed Joint
 * Hinge Joint
 
-## Workflows
+## LKG Workflows
 
 ### Area: PhysX Colliders & PhysX Shape Colliders
 
@@ -186,6 +186,39 @@ Any project that has the following Gems enabled:
 | Create cloth blinds and get them to render in the scene.        | <ol><li>Add an entity with a Cloth and a Mesh cloth under test.</li><li>Add your desired Mesh with a Cloth data node.<ul><li>NvCloth Provides:</li><ul><li>Cloth Blinds</li><li>Cloth Blinds Broken</li><li>Cloth Locked Corners Four</li><li>Cloth Locked Corners Two</li><li>Cloth Locked Edge</li></ul></ul></li><li>On the Cloth component set your desired mesh node.</li><li>Set your desired Cloth Component Properties.</li><li>Set up your scene to view the cloth when the simulation is rendered.</li><li>Run the Simulation in Editor Game Mode or in the Game Launcher.</li></ol>                              | <ul><li>When adding a Cloth Component to an Entity without dependent components, component will notify and suggest entities to add.</li><li>Cloth renders and moves according to the properties set.</li><li>Cloth will Simulate in Editor when property is Enabled.</li></ul>                                                  |
 | Create cloth supported Actor and get it to render in the scene. | <ol><li>Add an entity with a Cloth, Actor, and Simple Motion for each cloth actor under test.</li><li>Add the Cloth Supported Actor to the Actor Component.<ul><li>Chicken Actor provided in NvCloth Gem</li></ul></li><li>Add an animation for the selected Actor to the Simple Motion component and set it to loop.<ul><li>NvCloth gem provides chickenflapping, chickenwalking, and chickenidle</li></ul></li><li>Set desired Cloth component properties.</li><li>Set up your scene to view the Actor when the simulation is rendered.</li><li>Run the Simulation in Editor Game Mode or in the Game Launcher.</li></ol> | <ul><li>When adding a Cloth Component to an Entity without dependent components, component will notify and suggest entities to add.</li><li>Cloth renders and moves according to the properties set.</li><li>Cloth will animate when the Actor moves.</li><li>Cloth will Simulate in Editor when property is Enabled.</li></ul> |
 ---
+
+### Area: PhysX Cloth
+
+#### Project Requirements
+Any project that has the following Gems enabled: 
+* PhysX 
+* Primitive Assets 
+* Script Canvas Physics
+* NvCloth
+* Mesh or Actor with a Cloth data node
+
+
+**Platforms:**
+* Windows
+* Linux
+
+**Docs:** [O3DE Nvidia Cloth](https://www.o3de.org/docs/user-guide/components/reference/physx/cloth/)
+
+**Product:** A scene with Nvidia Cloth entities (Mesh/Actor) that dynamically animate when rendered in a simulation.
+
+**Suggested Time Box:** 60 minutes
+
+| Workflow                                                        | Requests                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Things to Watch For                                                                                                                                                                                                                                                                                                             |
+|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create cloth blinds and get them to render in the scene.        | <ol><li>Add an entity with a Cloth and a Mesh cloth under test.</li><li>Add your desired Mesh with a Cloth data node.<ul><li>NvCloth Provides:</li><ul><li>Cloth Blinds</li><li>Cloth Blinds Broken</li><li>Cloth Locked Corners Four</li><li>Cloth Locked Corners Two</li><li>Cloth Locked Edge</li></ul></ul></li><li>On the Cloth component set your desired mesh node.</li><li>Set your desired Cloth Component Properties.</li><li>Set up your scene to view the cloth when the simulation is rendered.</li><li>Run the Simulation in Editor Game Mode or in the Game Launcher.</li></ol>                              | <ul><li>When adding a Cloth Component to an Entity without dependent components, component will notify and suggest entities to add.</li><li>Cloth renders and moves according to the properties set.</li><li>Cloth will Simulate in Editor when property is Enabled.</li></ul>                                                  |
+| Create cloth supported Actor and get it to render in the scene. | <ol><li>Add an entity with a Cloth, Actor, and Simple Motion for each cloth actor under test.</li><li>Add the Cloth Supported Actor to the Actor Component.<ul><li>Chicken Actor provided in NvCloth Gem</li></ul></li><li>Add an animation for the selected Actor to the Simple Motion component and set it to loop.<ul><li>NvCloth gem provides chickenflapping, chickenwalking, and chickenidle</li></ul></li><li>Set desired Cloth component properties.</li><li>Set up your scene to view the Actor when the simulation is rendered.</li><li>Run the Simulation in Editor Game Mode or in the Game Launcher.</li></ol> | <ul><li>When adding a Cloth Component to an Entity without dependent components, component will notify and suggest entities to add.</li><li>Cloth renders and moves according to the properties set.</li><li>Cloth will animate when the Actor moves.</li><li>Cloth will Simulate in Editor when property is Enabled.</li></ul> |
+---
+
+## New Features, Feature Improvements, Added Coverage for Current LKG
+This section should change for each LKG cycle to target new features, feature area improvements, or an area that has been presenting issues and can use additional coverage in the LKG cycle
+
+Execute the following Workflow Docs:
+* [Physics Blast Materials](physics-blast-materials-workflows.md)
 
 
 
