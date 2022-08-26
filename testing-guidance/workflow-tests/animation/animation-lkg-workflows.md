@@ -1,6 +1,6 @@
-# Animation LKG Workflow Tests
+# Physics LKG Workflow Tests
 
-Testing in this area should focus on the Animation functionality.
+Testing in this area should focus on the Physics functionality found in PhysX and other supported Nv Physics libraries.
 
 ## Common Issues to Watch For
 
