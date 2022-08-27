@@ -1,4 +1,4 @@
-# Physics LKG Workflow Tests
+# Animation LKG Workflow Tests
 
 Testing in this area should focus on the Animation functionality including the Animation Editor and Animation scene rendering.
 
