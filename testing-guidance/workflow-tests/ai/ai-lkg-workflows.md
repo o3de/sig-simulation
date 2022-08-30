@@ -2,13 +2,13 @@
 
 Testing in this area should focus on the AI functionality provided in the Recast Navigation gem.
 
-## General Animation Docs
+## General AI Docs
 * [O3DE Dev Docs: Recast Navigation](https://deploy-preview-1693--o3deorg.netlify.app/docs/user-guide/interactivity/navigation-and-pathfinding/recast-navigation/)
 
 ## Common Issues to Watch For
 
 Test guidance will sometimes note specific issues to watch for. The common issues below should be watched for through all testing, even if unrelated to the current workflow being tested.
-- Asset processor errors when saving animation settings
+- Asset processor errors when saving levels with Recast NavMesh related components.
 - Warnings or Errors that appear in the Editor Console Log while setting up or running scenes.
 - Errors appearing in the Animation Editor's Log Window view.
 - Path Finding doesn't obey collisions.
@@ -19,8 +19,8 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 ### Area: Stress Test Workflow using Automated Testing sample
 
 **Project Requirements**
-* You've read through the Recast Navigation docs
-* AutomatedTesting is set as your default project and has been built for editor and game launcher
+* You've read through the Recast Navigation docs.
+* AutomatedTesting is set as your default project and has been built for editor and game launcher.
 * Ability to deploy sample to Mobile device for mobile sample
 
 
@@ -35,7 +35,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 
 **Product:** Proven that the Editor and Game Mode/Launcher are able to path find.
 
-**Suggested Time Box:** 15 minutes per platform
+**Suggested Time Box:** 15 minutes per platform.
 
 | Workflow                      | Requests                                                                                                                                                                                                                       | Things to Watch For                                                                                                                                                                                                                                                 |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -46,9 +46,9 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 ### Area: In Editor Rendering Workflow
 
 **Project Requirements**
-* You've read through the Recast Navigation docs
-* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled)
-* A level with at least two entities have been created
+* You've read through the Recast Navigation docs.
+* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled).
+* A level with at least two entities have been created.
 
 
 **Editor Platforms:**
@@ -57,7 +57,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 
 **Product:** A level that is able to project recast navigation meshes in the editor viewport.
 
-**Suggested Time Box:** 30 minutes per platform
+**Suggested Time Box:** 30 minutes per platform.
 
 | Workflow                                                                  | Requests                                                                                                                                                                                                                                                                                                                                                                                                                   | Things to Watch For                                                                                                                                                                                                                                                                                                                         |
 |---------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -70,10 +70,10 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 ### Area: Recast Navigation Simple Scenario Workflow
 
 **Project Requirements**
-* You've read through the Recast Navigation docs
-* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled)
-* A level with at least five (6) entities have been created
-* Ability to deploy sample to Mobile device for mobile sample
+* You've read through the Recast Navigation docs.
+* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled).
+* A level with at least five (6) entities have been created.
+* Ability to deploy sample to Mobile device for mobile sample.
 
 
 **Editor Platforms:**
@@ -106,11 +106,11 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 ### Area: Recast Navigation Performance Workflow
 
 **Project Requirements**
-* You've read through the Recast Navigation docs
-* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled)
-* A scenario created using the [**Recast Navigation Simple Scenario Workflow**](#Area:-Simple-Scenario-Workflow) above
-* A level with at least five (6) entities have been created
-* Ability to deploy sample to Mobile device for mobile sample
+* You've read through the Recast Navigation docs.
+* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled).
+* A scenario created using the [**Recast Navigation Simple Scenario Workflow**](#Area:-Simple-Scenario-Workflow) above.
+* A level with at least five (6) entities have been created.
+* Ability to deploy sample to Mobile device for mobile sample.
 
 
 **Editor Platforms:**
