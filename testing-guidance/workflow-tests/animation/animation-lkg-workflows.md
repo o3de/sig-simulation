@@ -3,7 +3,8 @@
 Testing in this area should focus on the Animation functionality including the Animation Editor and Animation scene rendering.
 
 ## General Animation Docs
-* [O3DE Dev Docs: Recast Navigation](https://deploy-preview-1693--o3deorg.netlify.app/docs/user-guide/interactivity/navigation-and-pathfinding/recast-navigation/)
+* [O3DE Animation Overview](https://www.o3de.org/docs/user-guide/visualization/animation/)
+* [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
 
 ## Common Issues to Watch For
 
@@ -11,78 +12,91 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 - Asset processor errors when saving animation settings
 - Warnings or Errors that appear in the Editor Console Log while setting up or running scenes.
 - Errors appearing in the Animation Editor's Log Window view.
-- Path Finding doesn't obey collisions.
-- Path Finding debug draw does not project correctly.
+- Broken Animation behaviors.
+
+## Supported Component Variants
+### PhysX Collider shapes
+* Box
+* Capsule
+* Sphere
+* PhysicsAsset
 
 ## Workflows
 
-### Area: Stress Test Workflow using Automated Testing sample
+### Area: Animation Editor
 
 **Project Requirements**
 
-* AutomatedTesting project
+Any project that has the following Gems enabled: 
+* Emotion FX Animation
+* Scripted Entity Tweener
+* Primitive Assets
+
+Assets:
+* An Actor that is set up to work with animations.
+* Animations for your Actor.
 
 
-**Editor Platforms:**
+**Platforms:**
 * Windows
 * Linux
 
-**Game Launcher Supported Platforms:**
-* Windows
-* Linux
-* Mobile
-
-**Prerequisites:**
-* You've read through the Recast Navigation docs
-* AutomatedTesting is set as your default project and has been built for editor and game launcher
-* Ability to deploy sample to Mobile device for mobile sample
-
+**Docs:** 
+* [O3DE Animation Editor User Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/user-interface/)
+* [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
 
 **Product:** 
 
-**Suggested Time Box:** 15 minutes per platform
+**Suggested Time Box:** 60 minutes
 
-| Workflow                      | Requests                                                                                                                                                                                                                       | Things to Watch For                                                                                                                                                                                                                                                 |
-|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Editor Mode Stress Test**   | <ol><li>Open the Editor with AutomatedTesting project.</li><li>Open Navigation/NavigationSample level</li><li>Enter the game mode with CTRL+G.</li><li>Left click around the level to navigate the character around.</li></ol> | <ul><li>Level opens without errors.</li><li>Player entity navigates around the map.</li><li>Verify that there is no performance issues while navigating.<ul><li>Extreme Stutter.</li><li>Framerate falls to 1 or some other unusable frame rate</li></ul></li></ul> |
-| **Game Launcher Stress Test** | <ol><li>Open the AutomatedTesting game launcher.</li><li>Open Navigation/NavigationSample level</li><li>Left click around the level to navigate the character around.</li></ol>                                                | <ul><li>Level opens without errors.</li><li>Player entity navigates around the map.</li><li>Verify that there is no performance issues while navigating.<ul><li>Extreme Stutter.</li><li>Framerate falls to 1 or some other unusable frame rate</li></ul></li></ul> |
+| Workflow                                                          | Requests                                                                                                                                                                                                                                                                                                                                                                                                                               | Things to Watch For                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+|-------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Launch and configure the Animation Editor**                     | <ol><li>Open the O3DE Editor.</li><li>Open the Animation Editor (using varying entry points):</li><ul><li>O3DE Toolbar → Tools → Animation Editor</li><li>Actor Component's Actor asset property field.</li></ul><li>Resize the Animation Editor to desired size.</li><li>Dock/Undock editor to desired position.</li><li>Select the desired Layout.</li><li>Move Animation Editor panels around within the Animation Editor</li></ol> | <ul><li>Animation Editor launches</li><li>Animation Editor Resizes.</li><li>Animation Editor docks as expected.</li><li>Layouts will quickly switch between different View configurations.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Import an Actor and render an animation using various cameras** | <ol><li>Open the Animation Editor.</li><li>Import an Actor.</li><li>Use the Actor Manager to set the Motion Extraction Joint.</li><li>In Motion Sets add the motions you want to play and save the motion sets you created.</li><li>Select the motion that you want to play and click play in the Time View.</li><li>While animation plays switch between cameras.</li><li>Save the Actor.</li></ol>                          | <ul><li>Actor Imports without any issues.</li><li>Joint is set when selected.</li><li>When Selecting a joint and using Find Best Match, a joint is selected.</li><li>Motion Sets Can be Created, Updated, Deleted.</li><li>Motions can be added, updated, and deleted to/from motion sets.</li><li>Motion Sets save and process in the Asset Processor.</li><li>Animation Editor's Viewport renders the animation when the motion is played and stops playing when stopped.</li><li>When another animation is played, the previously playing animations stops immediately before playing the next animation.</li><li>Animation render plays as expected while the camera views change.</li></ul> |
+| **Create and load a custom Workspace**                            | <ol><li>Open the Animation Editor.</li><li>Create a partial actor workflow.</li><li>Save the workspace and close out of the Animation Editor.</li><li>Open the Animation Editor back up a previously created workspace.</li></ol>                                                                                                                                                                                                      | <ul><li>Workspace saves and is processed by the Asset Processor.</li><li>Animation Editor loads in the Actor, Motion Sets, Motions, and other modified fields.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Create a custom Layout**                                        | <ol><li>Open the Animation Editor.</li><li>Close some views.</li><li>Open some unopened views.</li><li>Move and resize views around within the Animation Editor.</li><li>Save the Layout.</li><li>Switch layouts back and forth.</li></ol>                                                                                                                                                                                             | <ul><li>Views open and close in the Animation Editor.</li><li>Views move around and resize within animation editor as expected.</li><li>View Saves successfully.</li><li>When switching between Layouts, the views load according to the desired view, including user generated views.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                 |
+
 ---
 
-### Area: In Editor Rendering Workflow
+### Area: Script an Actor with an Animation Graph to Play Animations via User Input during Runtime 
 
 **Project Requirements**
-* Recast Navigation Gem has been enabled and built for the project (AutomatedTesting comes with this gem enabled)
-* A level with at least two entities have been created
 
+Any project that has the following Gems enabled: 
+* PhysX 
+* Emotion FX Animation
+* Scripted Entity Tweener
+* Primitive Assets
+* Starting Point Input
 
-**Editor Platforms:**
+Assets:
+* An Actor that is set up to work with animations.
+* Animations for your Actor.
+* An Input Bindings file configured to manipulate your Actor's motion properties when a button is pressed.
+* A Script Canvas to translate the Input Bindings to the properties set in your 
+
+**Platforms:**
 * Windows
 * Linux
 
-**Prerequisites:**
-* You've read through the Recast Navigation docs
-* AutomatedTesting is set as your default project and has been built for editor and game launcher
-* Ability to deploy sample to Mobile device for mobile sample
+**Docs:** 
+* [O3DE Animation Editor Concepts and Terms](https://www.o3de.org/docs/user-guide/visualization/animation/character-editor/concepts-and-terms/)
+* [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
+* [O3DE Anim Graph Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/animation-graph-user-interface/)
+* [O3DE Creating an Animation Graph](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/#step-2-creating-an-animation-graph)
+* [O3DE Animation Editor Nodes](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/node/)
+* [O3DE Creating Blend Trees](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/creating-blend-trees/)
 
 
-**Product:** 
+**Product:** A scene where an actor renders to the screen and animations will play based upon user input.
 
-**Suggested Time Box:** 15 minutes per platform
+**Suggested Time Box:** 60 minutes
 
-| Workflow                                                                  | Requests                                                                                                                                                                                                                                         | Things to Watch For |
-|---------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
-| **Configure NavMesh Entity**                                              | <ol><li>On the NavMesh entity add the following components:<ul><li>Recast Navigation mesh.<ul><li>Editor Preview: True</li></ul></li><li>Required: Recast Navigation PhysX Provider</li><li>Required: Axis Aligned Box Shape</li></uL></li></ol> | <ul><li></li></ul>  |
-| **Configure White Box Collider Entity**                                   | <ol><li>On the Second Entity add the following components:<ul><li>White Box</li><li>White Box Collider</li></ul></li></ol>                                                                                                                       | <ul><li></li></ul>  |
-| **Set up and Manipulate the Scene to see in Editor Nav Mesh Projections** | <ol><li>Set up the Navigation Mesh and White Box entities to be intersecting.<ul><li>![](images/nav-mesh-white-box-intersection.png)</li></ul></li></ol>                                                                                         | <ul><li></li></ul>  |
-| **Editor Mode Stress Test**                                               | <ol><li></li></ol>                                                                                                                                                                                                                               | <ul><li></li></ul>  |
-
+| Workflow                                                                                  | Requests                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Things to Watch For                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|-------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Import an actor with modified Modifiers and apply desired motions within motion sets.** | <ol><li>Open the FBX Settings for a an actor from the Asset Browser.</li><li>Add an Actor modifier from the FBX Settings Motions tab and change the values before saving.</li><li>Open Animation Editor.</li><li>Import the actor that you've modified.</li><li>Add a series of motions and motion sets.</li></ol>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | <ul><li>Actor Modifiers can be applied and saved.</li><li>Actor imports into the Animation Editor.</li><li>Motion Sets and Motions can be added to the Actor.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Create an Animation Graph and blend some animations together.**                         | <ol><li>Previous workflow has been completed.</li><li>Open The Animation Editor with the AnimGraph layout selected.</li><li>Create an animation graph from the AnimGraph view.</li><li>Create a Motion node and a Blend Tree node that are connected to each other with transition lines.</li><li>Create parameters to set the conditions to blend between animations and set them to the transition line connections.</li><li>Enter the Blend Tree node by double clicking it.</li><li>Add two Motions nodes and a Blend Two node to the Blend Tree graph.</li><li>Apply Motions and adjust properties to the motion nodes before wiring each output pose to the pose inputs of the Blend Two node.</li><li>Wire the Blend Two node Output Pose to the Final Node Input Pose.</li><li>Add a parameters node and a smoothing node.</li><li>Select the desired Parameter for the Parameter node</li><li>Connect the output the Parameter node to the input of the Smoothing node</li><li>Connecting the output of the Smoothing node Weight input on the Blend Two node.</li><li>Save the AnimGraph.</li><li>Click the Play/Activate AnimGraph button to play the animation in the Animation Editor.</li><li>Modify the parameter values as the AnimGraph plays.</li></ol> | <ul><li>AnimationGraph can be created.</li><li>Nodes can be created.</li><li>Parameters can be created, modified, and applied to Transition Lines.</li><li>Blend Tree node can be entered to define its behavior.</li><li>Blend Tree node can have behavior defined by creating nodes and transition lines.</li><li>When the Play/Activate AnimGraph button is pressed the animation will play according to the current parameter value.</li><li>When the parameter values are adjusted from the Parameter view, the rendered animation will blend to the new animation when the conditions are met to do so.</li></ul> |
+| **Add an actor to a level and have it play the Animation Graph.**                         | <ol><li>Previous two workflows have been completed.</li><li>Create an entity with an Actor Component, AnimGraph Component, Script Canvas Component, and Input Component.</li><li>Add the previous created Actor to the Actor Component.</li><li>Add an Input Bindings that's configured to provide input from your input device to the Input Component.<ul><li>Starting Point Input gem provides _thirdpersonmovement.inputbindings_</li></ul></li><li>Configure the Input Component to have the inputbindings.</li><li>Configure the Script Canvas Component to have a Script Canvas that translates the interaction between the AnimGraph Parameters and Input Binding Events.</li><li>Save the level.</li><li>Run the Simulation in Editor Game Mode or in the Game Launcher.</li><li>Press the input to drive the animation events.</li></ol>                                                                                                                                                                                                                                                                                                                                                                                                                         | <ul><li>Actor Component and AnimGraph Component can be added, configured, and deleted from an Entity.</li><li>Actor Renders to the Viewport after being added to the Actor Component.</li><li>Game Mode: When input events are triggered from the input device the actor animations will play.</li></ul>                                                                                                                                                                                                                                                                                                                |
 ---
-
-
-## Additional Coverage: New Features, Feature Improvements, Areas of Concern for Current LKG
-This section should change for each LKG cycle to target new features, feature area improvements, or an area that has been presenting issues and can use additional coverage in the LKG cycle.
-
-Execute the following Workflow Docs:
-
 
 
