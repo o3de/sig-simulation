@@ -3,7 +3,9 @@
 Testing in this area should focus on the Root Motion Extraction to provide data driven animation events.
 
 ## General Docs
-* DOCS UNDER DEVELOPMENT
+* FEATURE DOCS UNDER DEVELOPMENT
+* [O3DE Animation Overview](https://www.o3de.org/docs/user-guide/visualization/animation/)
+* [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
 
 ## Common Issues to Watch For
 
