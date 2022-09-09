@@ -1,14 +1,19 @@
-# FEATURE Workflow Tests
+# Animation Editor Workflow Tests
 
-Testing in this area should focus on the SOMETHING SOMETHING.
+Testing in this area should focus on the general usage workflows of the Animation Editor.
+
 
 ## General Docs
-* [Some Docs](https://www.o3de.org/docs/)
+* [O3DE Animation Editor User Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/user-interface/)
+* [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
 
 ## Common Issues to Watch For
 
 Test guidance will sometimes note specific issues to watch for. The common issues below should be watched for through all testing, even if unrelated to the current workflow being tested.
-- Some common issue
+- Asset processor errors when saving animation settings
+- Warnings or Errors that appear in the Editor Console Log while setting up or running scenes.
+- Errors appearing in the Animation Editor's Log Window view.
+- Broken Animation behaviors.
 
 ## Workflows
 
@@ -47,11 +52,6 @@ Assets:
 
 ---
 
-
-## Additional Coverage: New Features, Feature Improvements, Areas of Concern for Current LKG
-This section should change for each LKG cycle to target new features, feature area improvements, or an area that has been presenting issues and can use additional coverage in the LKG cycle.
-
-Execute the following Workflow Docs:
 
 
 
