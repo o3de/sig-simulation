@@ -4,6 +4,7 @@ Testing in this area should focus on the general usage workflows of the Animatio
 
 
 ## General Docs
+* [O3DE Animation Editor Concepts and Terms](https://www.o3de.org/docs/user-guide/visualization/animation/character-editor/concepts-and-terms/)
 * [O3DE Animation Editor User Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/user-interface/)
 * [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
 
@@ -15,11 +16,24 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 - Errors appearing in the Animation Editor's Log Window view.
 - Broken Animation behaviors.
 
+
+## Workflow Variants
+### Source Nodes
+* Bind Pose
+* State Machine
+* Motion
+* Entry
+* Reference
+* Blend Tree
+* Hub
+
 ## Workflows
 
-### Area: Animation Editor
+### Area: Animation Editor Behaviors
 
-**Project Requirements**
+**Description:** Testing in this area will focus on basic Animation Editor behaviors such as docking, editor layout and management, Actor importing, and animation rendering.
+
+**Project Requirements:**
 
 Any project that has the following Gems enabled: 
 * Emotion FX Animation
@@ -30,7 +44,6 @@ Assets:
 * An Actor that is set up to work with animations.
 * Animations for your Actor.
 
-
 **Platforms:**
 * Windows
 * Linux
@@ -39,7 +52,8 @@ Assets:
 * [O3DE Animation Editor User Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/user-interface/)
 * [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
 
-**Product:** 
+**Product:** A configured animation editor for the user's needs. 
+
 
 **Suggested Time Box:** 60 minutes
 
@@ -49,7 +63,49 @@ Assets:
 | **Import an Actor and render an animation using various cameras** | <ol><li>Open the Animation Editor.</li><li>Import an Actor.</li><li>Use the Actor Manager to set the Motion Extraction Joint.</li><li>In Motion Sets add the motions you want to play and save the motion sets you created.</li><li>Select the motion that you want to play and click play in the Time View.</li><li>While animation plays switch between cameras.</li><li>Save the Actor.</li></ol>                                                                                                                                                                                               | <ul><li>Actor Imports without any issues.</li><li>Joint is set when selected.</li><li>When Selecting a joint and using Find Best Match, a joint is selected.</li><li>Motion Sets Can be Created, Updated, Deleted.</li><li>Motions can be added, updated, and deleted to/from motion sets.</li><li>Motion Sets save and process in the Asset Processor.</li><li>Animation Editor's Viewport renders the animation when the motion is played and stops playing when stopped.</li><li>When another animation is played, the previously playing animations stops immediately before playing the next animation.</li><li>Animation render plays as expected while the camera views change.</li></ul> |
 | **Create and load a custom Workspace**                            | <ol><li>Open the Animation Editor.</li><li>Create a partial actor workflow.</li><li>Save the workspace and close out of the Animation Editor.</li><li>Open the Animation Editor back up a previously created workspace.</li></ol>                                                                                                                                                                                                                                                                                                                                                                  | <ul><li>Workspace saves and is processed by the Asset Processor.</li><li>Animation Editor loads in the Actor, Motion Sets, Motions, and other modified fields.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Create a custom Layout**                                        | <ol><li>Open the Animation Editor.</li><li>Close some views.</li><li>Open some unopened views.</li><li>Move and resize views around within the Animation Editor.</li><li>Save the Layout.</li><li>Switch layouts back and forth.</li></ol>                                                                                                                                                                                                                                                                                                                                                         | <ul><li>Views open and close in the Animation Editor.</li><li>Views move around and resize within animation editor as expected.</li><li>View Saves successfully.</li><li>When switching between Layouts, the views load according to the desired view, including user generated views.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                |
+---
 
+### Area: Animation Graph Creation
+
+**Description:** Testing in this area will focus on basic testing of the Animation Graph's behaviors and outputs.
+
+**Project Requirements:**
+
+Any project that has the following Gems enabled: 
+* PhysX 
+* Emotion FX Animation
+* Scripted Entity Tweener
+* Primitive Assets
+* Starting Point Input
+
+Assets:
+* An Actor that is set up to work with animations.
+* Animations for your Actor.
+* A Script Canvas to translate the Input Bindings to the properties set in your .
+
+Animation Editor Configuration:
+**Animation Editor** should be set to the **AnimGraph Layout** or a custom layout that utilizes the **Anim Graph View**.
+
+
+
+**Platforms:**
+* Windows
+* Linux
+
+**Docs:**
+* [O3DE Anim Graph Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/animation-graph-user-interface/)
+* [O3DE Creating an Animation Graph](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/#step-2-creating-an-animation-graph)
+* [O3DE Animation Editor Nodes](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/node/)
+
+**Product:** An animation graph.
+
+**Suggested Time Box:** 60 minutes
+
+
+| Workflow                      | Requests                                                                                                                                                                                                                                       | Things to Watch For |
+|-------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| **Create an animation graph** | <ol><li>Create a new AnimGraph from the AnimGraph view.</li><li>Add a [Source Node](#Source-Nodes) from the Anim Graph Palette.<ul><li>Right-Click context menu on the anim graph canvas.</li><li>Anim Graph Palette View.</li></ul></li></ol> | <ul><li></li></ul>  |
+| ****                          | <ol><li></li></ol>                                                                                                                                                                                                                             | <ul><li></li></ul>  |
 ---
 
 
