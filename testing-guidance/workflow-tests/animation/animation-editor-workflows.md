@@ -36,7 +36,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 **Project Requirements:**
 
 Any project that has the following Gems enabled: 
-* Emotion FX Animation
+* EMotion FX Animation
 * Scripted Entity Tweener
 * Primitive Assets
 
@@ -75,7 +75,7 @@ Assets:
 
 Any project that has the following Gems enabled: 
 * PhysX 
-* Emotion FX Animation
+* EMotion FX Animation
 * Scripted Entity Tweener
 * Primitive Assets
 * Starting Point Input
