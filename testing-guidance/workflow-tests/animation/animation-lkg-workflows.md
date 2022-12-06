@@ -74,7 +74,13 @@ Assets:
     * Rin & Jack from AutomatedTesting are acceptable test assets.
 * Animations for your Actor.
 * An Input Bindings file configured to manipulate your Actor's motion properties when a button is pressed.
-* A Script Canvas to translate the Input Bindings to the properties set in your Input Bindings file. 
+   * Using an input bindings file from Starting Point Input such as _thirdpersonmovement.inputbindings_ is acceptable.
+* A Script Canvas to translate the Input Bindings to the properties set in your Input Bindings file.
+* Example Assets:
+   * Examples created using the _Rin.fbx Actor_, _thirdpersonmovement.inputbindings_ from the Starting Point Input Gem, and _MotionMatching.motionset_ assets from the Motion Matching Gem. 
+      * [Example AnimGraph](testassets/TestAnimGraph.animgraph)
+      * [Example ScriptCanvas](testassets/TestSC.scriptcanvas)
+      * [Example File Screenshots](testassets/example-asset-screenshots.md)
 
 **Platforms:**
 * Windows
@@ -104,4 +110,5 @@ Assets:
 This section should change for each LKG cycle to target new features, feature area improvements, or an area that has been presenting issues and can use additional coverage in the LKG cycle.
 
 Execute the following Workflow Docs:
-[Root Motion Extraction Workflow](root-motion-extraction-workflow.md)
+* [Root Motion Extraction Workflow](root-motion-extraction-workflow.md)
+* [FootIK](footik-workflow.md)

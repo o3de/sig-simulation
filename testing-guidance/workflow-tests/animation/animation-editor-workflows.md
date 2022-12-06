@@ -83,7 +83,14 @@ Any project that has the following Gems enabled:
 Assets:
 * An Actor that is set up to work with animations and set up for the AnimGraph behaviors you want to script.
 * Animations for your Actor.
-* A Script Canvas to translate the Input Bindings to the properties set in your .
+* An Input Bindings file configured to manipulate your Actor's motion properties when a button is pressed.
+   * Using an input bindings file from Starting Point Input such as _thirdpersonmovement.inputbindings_ is acceptable 
+* A Script Canvas to translate the Input Bindings to the properties set in your Input Bindings file. 
+* Example Assets:
+   * Examples created using the _Rin.fbx Actor_, _thirdpersonmovement.inputbindings_ from the Starting Point Input Gem, and _MotionMatching.motionset_ assets from the Motion Matching Gem. 
+      * [Example AnimGraph](testassets/TestAnimGraph.animgraph)
+      * [Example ScriptCanvas](testassets/TestSC.scriptcanvas)
+      * [Example File Screenshots](testassets/example-asset-screenshots.md)
 
 Animation Editor Configuration:
 **Animation Editor** should be set to the **AnimGraph Layout** or a custom layout that utilizes the **Anim Graph View**.
