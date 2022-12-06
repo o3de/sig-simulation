@@ -4,6 +4,7 @@ Testing in this area should focus on the general usage workflows of the Animatio
 
 
 ## General Docs
+
 * [O3DE Animation Editor Concepts and Terms](https://www.o3de.org/docs/user-guide/visualization/animation/character-editor/concepts-and-terms/)
 * [O3DE Animation Editor User Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/user-interface/)
 * [O3DE Getting Started With Animation Editor](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/quick-start/)
@@ -18,7 +19,9 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 
 
 ## Workflow Variants
+
 ### Source Nodes
+
 * Bind Pose
 * State Machine
 * Motion
@@ -36,9 +39,9 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 **Project Requirements:**
 
 Any project that has the following Gems enabled: 
-* EMotion FX Animation
-* Scripted Entity Tweener
-* Primitive Assets
+* _O3DE\Gems\EMotionFX_
+* _O3DE\Gems\ScriptedEntityTweener_
+* _O3DE\Gems\PrimitiveAssets_
 
 Assets:
 * An Actor that is set up to work with animations.
@@ -74,11 +77,11 @@ Assets:
 **Project Requirements:**
 
 Any project that has the following Gems enabled: 
-* PhysX 
-* EMotion FX Animation
-* Scripted Entity Tweener
-* Primitive Assets
-* Starting Point Input
+* _O3DE\Gems\PhysX_ 
+* _O3DE\Gems\EMotionFX_
+* _O3DE\Gems\ScriptedEntityTweener_
+* _O3DE\Gems\PrimitiveAssets_
+* _O3DE\Gems\StartingPointInput_
 
 Assets:
 * An Actor that is set up to work with animations and set up for the AnimGraph behaviors you want to script.

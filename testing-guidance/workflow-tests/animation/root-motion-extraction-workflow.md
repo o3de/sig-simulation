@@ -19,8 +19,8 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 
 **Project Requirements**
 A project set up with the following gems:
-* EMotion FX Animation
-* Scene Processing
+* _O3DE\Gems\EMotionFX_
+* _O3DE\Gems\SceneProcessing_
 
 Assets:
 * FBX source file that contains an actor and at least one motion.
