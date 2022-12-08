@@ -3,6 +3,7 @@
 Testing in this area should focus on the FootIK.
 
 ## General Docs
+
 * [Animation Editor User Interface](https://www.o3de.org/docs/user-guide/visualization/animation/animation-editor/user-interface/)
 * [Animation Editor Concepts and Terms](https://www.o3de.org/docs/user-guide/visualization/animation/character-editor/concepts-and-terms/)
 
@@ -39,4 +40,5 @@ Any project that has the following Gems enabled:
 | **Verify FootIK functionality in Atom Render Window**                         | <ol><li>In **AnimGraph** Blend Tree, select the Motion node and check the "In Place" box.</li><li>Click the Play button on top of the **AnimGraph** window.</li> <li>In **Parameters** window, increase the value of _FootIK_ parameter to 1.0.</li> <ul><li>Move the camera in Atom Renderer window so the Actor is visible.</li> <li>Use the transform gizmo to move the Actor up and down. Notice that the knees of the Actor are bending while feet are not clipping through the ground.</li></ul><li>In **Parameters** window, set the value of the _FootLock_ parameter to true.</li><ul><li>Notice that the Actor's feet have stopped moving while other joints of the Actor are still moving.</li></ul> <li>Move the Actor slightly above the ground, then in **Parameters** window set the value of the _Hips_ parameter to true.</li><ul><li>Notice that the Actor is moved down after setting _Hips_ value to true; The Actor's feet touch the ground.</li></ul></ol> | <ul><li>Motion is played in place if "In Place" option is checked in the Motion node.<li>Actor instance needs to be selected to play the AnimGraph, if AnimGraph is not played after clicking the Play button, go to the **Actor Manager** window and select the Actor instance.</li><li>Parameters can be modified when the AnimGraph is being played.</li><li>The Actor's feet are not clipping through the ground when the FootIK parameter is set to 1.0.</li><li>The Actor is lowered so its feet touch the ground if the Actor is slightly above the ground and Hips parameter is set to true.</li></li></ul>  |
 ---
 # Final Product
+
 ![](images/footik-disabled.png)</br>![](images/footik-enabled.png)<br>
