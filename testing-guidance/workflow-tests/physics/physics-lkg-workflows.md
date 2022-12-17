@@ -12,12 +12,14 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 
 ## Supported Component Variants
 ### PhysX Collider shapes
+
 * Box
 * Capsule
 * Sphere
 * PhysicsAsset
 
 ### PhysX Shape Collider shapes
+
 * Box
 * Capsule
 * Cylinder
@@ -26,6 +28,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 * Sphere
 
 ### PhysX Force Region Force Types
+
 * World Space
 * Local Space
 * Point
@@ -34,6 +37,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 * Linear Dampening
 
 ### PhysX Joint Types
+
 * Ball Joint
 * Fixed Joint
 * Hinge Joint
