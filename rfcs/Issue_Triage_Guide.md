@@ -33,7 +33,13 @@ SIG-Simulation triages issues once a week on [Thursday](https://lists.o3de.org/g
         1. [Critical issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fcritical+sort%3Acreated-asc)
         2. [Major issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fmajor+sort%3Acreated-asc)
         3. [Other issues sorted by age](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation+sort%3Acreated-asc)
-   4. Process all the new [SIG-Simulation](https://github.com/o3de/sig-simulation/issues) issues in a similar way.
+   4. Process all the new points in a similar way for:
+        1. [SIG-Simulation Issues](https://github.com/o3de/sig-simulation/issues)
+        2. [SIG-Simulation PRs](https://github.com/o3de/sig-simulation/pulls)
+        3. [PhysX Issues](https://github.com/o3de/PhysX/issues)
+        4. [O3DE Extras Issues](https://github.com/o3de/o3de-extras/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-sig%2Cneeds-triage)
+        5. [Vacuum Robot Demo Issues](https://github.com/o3de/RobotVacuumSample/issues)
+        6. [Kraken Robot Demo Issues](https://github.com/o3de/ROSConDemo/issues)
 
 If there are questions about what to do with an issue please raise questions with SIG Chair(s) or start a conversation in SIG-Simulation.
 
