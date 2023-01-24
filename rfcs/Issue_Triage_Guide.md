@@ -6,34 +6,35 @@ While the [common issue triage guide for O3DE](https://github.com/o3de/community
 
 This guide covers how to triage GitHub issues for SIG-Simulation. Maintainers are encouraged to use and update this guide to ensure all contributors to SIG-Simulation understands how issues are handled and accepted by the SIG.
 
-##  Issue Triaging
+## Issue Triaging
 
 Triaging is the process used to handle intake of issues into the SIG-Simulation backlog. The process aims to ensure issues are both relevant to SIG-Simulation and contain sufficient information so that the community can take action.
 
 Process aims to ensure that:
+
 * Issues are appropriate for SIG-Simulation. Confirms that issues are actual issues, rather than requests for help or issues for another SIG.
 * Issues have clear information to enable SIG-Simulation to address the problem or request.
-* Issues are regularly maintained and updated until they are resolved.  
+* Issues are regularly maintained and updated until they are resolved.
 * Issue load is balanced across SIG maintainers when action is required.
 * All the SIG-Simulation community can participate.
 
-# Process
+## Process
 
 SIG-Simulation triages issues once a week on [Thursday](https://lists.o3de.org/g/o3de-calendar/calendar). Anyone is welcome to attend. Triage will be led by SIG chair, co-chair or maintainer (referred to below as *Triage Leader*)
 
 ## Triage Leader Guide
 
 1. Join the SIG-Simulation discord voice channel
-2. Announce yourself as the Triage Leader and wait a few minutes for others to join the call.
-3. Use the *Individual Issue Triage* guide below to process all new issues for SIG:
-   1. Review any open issues with [needs-sig](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-sig) that may be for SIG Simulation
-        1. Remove `needs-sig` and add `sig/simulation`. These items will now show up when reviewing issues below.    
-   2. Process the main repository issues
+1. Announce yourself as the *Triage Leader* and wait a few minutes for others to join the call.
+1. Use the *Individual Issue Triage* guide below to process all new issues for SIG:
+   1. Review any open issues with [needs-sig](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-sig) that may be for SIG-Simulation
+        1. Remove `needs-sig` and add `sig/simulation`. These items will now show up when reviewing issues below.
+   2. Process the main repository issues. As issues are triaged, please see if they can be categorized and added to the [O3DE Simulation Bugs board](https://github.com/orgs/o3de/projects/26/views/1?groupedBy%5BcolumnId%5D=25435410).
         1. [Blocker Issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fblocker+sort%3Acreated-asc)
-        1. [Critical issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fcritical+sort%3Acreated-asc)
-        2. [Major issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fmajor+sort%3Acreated-asc)
-        3. [Other issues sorted by age](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation+sort%3Acreated-asc)
-   4. Process all the new points in a similar way for:
+        2. [Critical issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fcritical+sort%3Acreated-asc)
+        3. [Major issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fmajor+sort%3Acreated-asc)
+        4. [Other issues sorted by age](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation+sort%3Acreated-asc)
+   3. Process all the new points in a similar way for:
         1. [SIG-Simulation Issues](https://github.com/o3de/sig-simulation/issues)
         2. [SIG-Simulation PRs](https://github.com/o3de/sig-simulation/pulls)
         3. [PhysX Issues](https://github.com/o3de/PhysX/issues)
@@ -45,30 +46,30 @@ If there are questions about what to do with an issue please raise questions wit
 
 ### Individual Issue Triage
 
-1. (Recommendation) Announce issue number and title to those in Discord voice channel, so others can follow along. 
-4. (Main issues only) Ensure issue is for SIG-Simulation. 
-   1. If the issue is not for SIG-Simulation, remove the `sig/simulation` label and comment on the issue as to reason why issue is not for SIG-Simulation. 
-   2. If the correct SIG is known assign issue to that SIG. Otherwise, add the `needs-sig` label so the general O3DE issue triage meeting can find the appropriate owners. 
-5. Review the issue and any comments to see if it can be accepted by SIG
+1. (Recommendation) Announce issue number and title to those in Discord voice channel, so others can follow along.
+1. (Main issues only) Ensure issue is for SIG-Simulation.
+   1. If the issue is not for SIG-Simulation, remove the `sig/simulation` label and comment on the issue as to reason why issue is not for SIG-Simulation.
+   2. If the correct SIG is known assign issue to that SIG. Otherwise, add the `needs-sig` label so the general O3DE issue triage meeting can find the appropriate owners.
+1. Review the issue and any comments to see if it can be accepted by SIG
    1. **If issue is a bug**: Check that report has enough information for someone to reproduce or understand the issue?
-   2. **If issue is a feature request**: Review the technical implications of the request. 
-      1. If it's a large change then the issue should become an RFC or be brought to the SIG-Simulation meeting for discussion. 
+   2. **If issue is a feature request**: Review the technical implications of the request.
+      1. If it's a large change then the issue should become an RFC or be brought to the SIG-Simulation meeting for discussion.
          1. Ask requestor to bring the issue back as an RFC or start a discussion topic.
-         2. Add the issue to the next SIG-Simulation meeting agenda, if that would be more appropriate. 
-6. If issue can be **accepted** then:
+         2. Add the issue to the next SIG-Simulation meeting agenda, if that would be more appropriate.
+1. If issue can be **accepted** then:
    1. If issue is a bug, add the `kind/bug` label.
-   2. If issue is for a feature request, add either `kind/feature`, `kind/enhancement`, or `kind/task`. Add the relevant feature labels as appropriate, e.g., `feature/physics` or `feature/animation`. 
-   5. Set a **priority** using a `priority/X` tag  for issue based on impact (ask other SIG members on call for guidance).  For feature requests, also set an appropriate `feature-need/X` tag.
-   7. Mark the issue as `triage/accepted`. 
-8. If the issue **requires more information** or is **rejected**, then:
+   1. If issue is for a feature request, add either `kind/feature`, `kind/enhancement`, or `kind/task`. Add the relevant feature labels as appropriate, e.g., `feature/physics` or `feature/animation`.
+   1. Set a **priority** using a `priority/X` tag  for issue based on impact (ask other SIG members on call for guidance).  For feature requests, also set an appropriate `feature-need/X` tag.
+   1. Mark the issue as `triage/accepted`.
+1. If the issue **requires more information** or is **rejected**, then:
    1. Assign a reviewer, if required, to handle follow-up comments, to reproduce the issue or ask for further clarifying information.
-   4. **If issue is rejected**: Reviewer/triage leader should reject issue and provide reason for rejection. 
+   1. **If issue is rejected**: Reviewer/triage leader should reject issue and provide reason for rejection.
       1. Mark the issue as `triage/declined`.
-   5. **If issue needs more information**: Reviewer/triage leader should add clear comments requesting the additional information. 
+   1. **If issue needs more information**: Reviewer/triage leader should add clear comments requesting the additional information.
       1. Mark the issue with `triage/needs-information`. It's recommended that all issues in this state have an assigned reviewer who will track updates until all required information is received. Issue can then be reconsidered for acceptance.
-9. If we need feedback on a particular UX workflow, add labels `needs-ux-info` or `needs-ux-action`.
-10. Remove the `needs-triage` label from issue.
-11. Add comments to issue, when appropriate, to capture issue triage decisions.
+1. If we need feedback on a particular UX workflow, add labels `needs-ux-info` or `needs-ux-action`.
+1. Remove the `needs-triage` label from issue.
+1. Add comments to issue, when appropriate, to capture issue triage decisions.
 
 ### Additional Labels to Consider for Contributors
 
@@ -84,10 +85,10 @@ If time permits (select some of these):
 * Review any open [blocker](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Apriority%2Fblocker) and [critical](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Apriority%2Fcritical) issues in the main repository:
   * Ensures priority is still valid. Ensures issues are still valid.
   * Assign any required commentators or ask for updates.
-* Review PRs for the SIG that are more than [30 days old](https://github.com/o3de/o3de/pulls?q=is%3Apr+is%3Aopen+label%3Asig%2Fsimulation+sort%3Acreated-asc) old, ensure PR appears to be active or ask contributor for to update PR or close out. 
-  * Ensures PRs are still active and are not blocked on contributor or maintainer action.  
+* Review PRs for the SIG that are more than [30 days old](https://github.com/o3de/o3de/pulls?q=is%3Apr+is%3Aopen+label%3Asig%2Fsimulation+sort%3Acreated-asc) old, ensure PR appears to be active or ask contributor for to update PR or close out.
+  * Ensures PRs are still active and are not blocked on contributor or maintainer action.
 * Review issues that are more than [90 days old](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+sort%3Acreated-asc)
-  * Ensures issues are still relevant to SIG. 
+  * Ensures issues are still relevant to SIG.
 
 ## Issue Workflow
 
@@ -129,7 +130,6 @@ An issue without `triage/accepted` label is considered abandoned if there has be
    1. If an issue with the SIG-Simulation label has had no updates for a while (14 days), follow-up with the SIG, either through [Discord chat channel](https://discord.gg/6nSYcUBaR3), [triage or standard meeting](https://lists.o3de.org/g/o3de-calendar/calendar). Consider attending a SIG-Simulation meeting to raise the issue for discussion.
 4. What can I do if I have a question for SIG-Simulation?
     1. The preferred way to raise questions is through the [SIG-Simulation Discord chat channel](https://discord.gg/6nSYcUBaR3) or the [SIG-Simulation discussion panel](https://github.com/o3de/sig-simulation/discussions).
-
 
 ## Acknowledgments
 
