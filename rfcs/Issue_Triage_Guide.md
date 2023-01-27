@@ -27,20 +27,16 @@ SIG-Simulation triages issues once a week on [Thursday](https://lists.o3de.org/g
 1. Join the SIG-Simulation discord voice channel
 1. Announce yourself as the *Triage Leader* and wait a few minutes for others to join the call.
 1. Use the *Individual Issue Triage* guide below to process all new issues for SIG:
-   1. Review any open issues with [needs-sig](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-sig) that may be for SIG-Simulation
+   1. Review any open issues with [needs-sig](https://github.com/search?q=org%3Ao3de+is%3Aissue+label%3Asig%2Fsimulation+label%3Aneeds-sig) that may be for SIG-Simulation
         1. Remove `needs-sig` and add `sig/simulation`. These items will now show up when reviewing issues below.
    2. Process the main repository issues. As issues are triaged, please see if they can be categorized and added to the [O3DE Simulation Bugs board](https://github.com/orgs/o3de/projects/26/views/1?groupedBy%5BcolumnId%5D=25435410).
-        1. [Blocker Issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fblocker+sort%3Acreated-asc)
-        2. [Critical issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fcritical+sort%3Acreated-asc)
-        3. [Major issues](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation++label%3Apriority%2Fmajor+sort%3Acreated-asc)
-        4. [Other issues sorted by age](https://github.com/o3de/o3de/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+label%3Asig%2Fsimulation+sort%3Acreated-asc)
+        1. [Blocker Issues](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc+label%3Apriority%2Fblocker)
+        2. [Critical issues](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc+label%3Apriority%2Fcritical)
+        4. [Major issues](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc+label%3Apriority%2Fmajor)
+        5. [Other issues sorted by age](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc)
    3. Process all the new points in a similar way for:
-        1. [SIG-Simulation Issues](https://github.com/o3de/sig-simulation/issues)
+        1. [Other SIG-Simulation Repo Issues](https://github.com/search?q=repo%3Ao3de%2Fsig-simulation+repo%3A%2Fo3de%2FPhysX+repo%3Ao3de%2FROSConDemo+repo%3Ao3de%2FRobotVacuumSample+is%3Aissue+is%3Aopen+sort%3Acreated-desc)
         2. [SIG-Simulation PRs](https://github.com/o3de/sig-simulation/pulls)
-        3. [PhysX Issues](https://github.com/o3de/PhysX/issues)
-        4. [O3DE Extras Issues](https://github.com/o3de/o3de-extras/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-sig%2Cneeds-triage)
-        5. [Vacuum Robot Demo Issues](https://github.com/o3de/RobotVacuumSample/issues)
-        6. [Kraken Robot Demo Issues](https://github.com/o3de/ROSConDemo/issues)
 
 If there are questions about what to do with an issue please raise questions with SIG Chair(s) or start a conversation in SIG-Simulation.
 
