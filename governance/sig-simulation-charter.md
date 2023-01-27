@@ -23,6 +23,7 @@ Sig-simulation oversees aspects of O3DE related to modelling real-world processe
 ## Scope
 
 - Physics API (AzFramework/Physics), physics related Gems (e.g. PhysX Gem) and physics tools
+- Maintenance of the [O3DE fork of PhysX 5](https://github.com/o3de/PhysX)
 - Animation systems, EMotionFX math library, related Gems (e.g. EMotionFX Gem) and animation tools
 - Character physics (e.g. character controllers, gravity, ragdolls)
 - Cloth simulation (e.g. NvCloth Gem)
@@ -32,6 +33,7 @@ Sig-simulation oversees aspects of O3DE related to modelling real-world processe
 - Editor "Simulate" mode (Ctrl+P)
 - Shape components (in co-operation with sig-content)
 - AI systems (e.g. pathfinding, behavior trees)
+- Robotics systems (e.g. [ROS2 Gem](https://github.com/o3de/o3de-extras/tree/development/Gems/ROS2)) and sample projects (e.g. [Robot Vacuum](https://github.com/o3de/RobotVacuumSample) and [Fruit Picking](https://github.com/o3de/ROSConDemo))
 - Potential future simulation features (e.g. fluids, particles)
 
 ## Cross-cutting Processes
