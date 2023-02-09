@@ -27,7 +27,7 @@ SIG-Simulation triages issues once a week on [Thursday](https://lists.o3de.org/g
 1. Join the SIG-Simulation discord voice channel
 1. Announce yourself as the *Triage Leader* and wait a few minutes for others to join the call.
 1. Use the *Individual Issue Triage* guide below to process all new issues for SIG:
-   1. Review any open issues with [needs-sig](https://github.com/search?q=org%3Ao3de+is%3Aissue+label%3Asig%2Fsimulation+label%3Aneeds-sig) that may be for SIG-Simulation
+   1. Review any open issues with [needs-sig](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Aneeds-sig) that may be for SIG-Simulation
         1. Remove `needs-sig` and add `sig/simulation`. These items will now show up when reviewing issues below.
    2. Process the main repository issues. As issues are triaged, please see if they can be categorized and added to the [O3DE Simulation Bugs board](https://github.com/orgs/o3de/projects/26/views/1?groupedBy%5BcolumnId%5D=25435410).
         1. [Blocker Issues](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc+label%3Apriority%2Fblocker)
