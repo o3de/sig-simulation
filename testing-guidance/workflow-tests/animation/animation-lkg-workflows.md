@@ -16,12 +16,12 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 - Broken Animation behaviors.
 
 ## Supported Component Variants
-### PhysX Collider shapes
+### PhysX Primitive Collider shapes
 
 * Box
 * Capsule
 * Sphere
-* PhysicsAsset
+* Cylinder
 
 ## Workflows
 
