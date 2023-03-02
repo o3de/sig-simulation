@@ -34,6 +34,7 @@ SIG-Simulation triages issues once a week on [Thursday](https://lists.o3de.org/g
         2. [Critical issues](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc+label%3Apriority%2Fcritical)
         4. [Major issues](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc+label%3Apriority%2Fmajor)
         5. [Other issues sorted by age](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Aneeds-triage++sort%3Acreated-asc)
+        6. [Issues in need-information triage state](https://github.com/search?q=org%3Ao3de+is%3Aissue+is%3Aopen+label%3Asig%2Fsimulation+label%3Atriage%2Fneeds-information++sort%3Acreated-asc)
    3. Process all the new points in a similar way for:
         1. [Other SIG-Simulation Repo Issues](https://github.com/search?q=repo%3Ao3de%2Fsig-simulation+repo%3A%2Fo3de%2FPhysX+repo%3Ao3de%2FROSConDemo+repo%3Ao3de%2FRobotVacuumSample+is%3Aissue+is%3Aopen+sort%3Acreated-desc)
         2. [SIG-Simulation PRs](https://github.com/o3de/sig-simulation/pulls)
