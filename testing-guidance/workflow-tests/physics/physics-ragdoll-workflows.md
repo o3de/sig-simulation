@@ -27,6 +27,7 @@ Test guidance will sometimes note specific issues to watch for. The common issue
 Any project that has the following Gems enabled:
 * An actor (fbx) file set up for Motions (for example *Rin.fbx* supplied by the Motion Matching Gem).
 * Multiple motions that work with the actor (Motion Matching Gem contains a *MotionMatching.motionset* for the *Rin.fbx* actor).
+* NVidia Cloth (NVCloth)
 
 **Editor Platforms:**
 * Windows
@@ -51,7 +52,7 @@ Any project that has the following Gems enabled:
 **Project Requirements**
 * An actor (fbx) file set up for Motions (for example *Rin.fbx* supplied by the Motion Matching Gem) and configured to ragdoll (please refer to the *Area: Ragdoll Authoring Improvements*).
 * Multiple motions that work with the actor (Motion Matching Gem contains a *MotionMatching.motionset* for the *Rin.fbx* actor).
-
+* NVCloth gem enabled
 
 **Editor Platforms:**
 * Windows
