@@ -1,4 +1,4 @@
-# O3DE Simulation SIG - Preliminary Issue Triage Guide
+# O3DE Simulation SIG - Issue Triage Guide
 
 While the [common issue triage guide for O3DE](https://github.com/o3de/community/issues/130) has not yet been established, this proposal establishes a preliminary issue triage guide for SIG-Simulation. It is intended to be replaced by the official triage guide, once approved.
 
