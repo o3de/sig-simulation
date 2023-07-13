@@ -36,7 +36,7 @@ As a contributor you can help in one of the following ways.
 ### Helpful Information
 Now that you know a little about us here are a few links to get you started.
 - Who is the Chair and Co-chair?
-  - Chair: Lars Gleim [Huawei, @lgleim], Co-chair: Bo Gao / 高波 [Huawei, @epsilon-delta]
+  - Chair: Adam Dąbrowski [Robotec.ai, @adamdbrw], Co-chair: Lars Gleim [Huawei, @lgleim]
 - How do I get in contact with the group?
   - We use Discord. Join the conversation here on the [SIG-Simulation Channel](https://discord.gg/6nSYcUBaR3).
 - Can I subscribe to notifications from SIG Simulation? What will I get notified about?
