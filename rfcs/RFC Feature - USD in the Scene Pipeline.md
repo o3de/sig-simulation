@@ -66,8 +66,7 @@ Scene files describe 3D content: Geometry, materials, animations. They also incl
 ### What makes USD interesting, why use USD instead of another format like FBX, GLTF, STL, Collada, STEP, etc?
 
 USD is built around a composition feature, the ability to easily reference other files. It's a lot like our prefab system.
-
-![](@todo_image)
+![image](https://github.com/user-attachments/assets/397b92ed-f43c-433e-8cc5-81ada05d33c8)
 
 Required O3DE Knowledge
 -----------------------
@@ -122,8 +121,7 @@ def Xform "hello"
 ```
 
 Visual representation of this file:
-
-![](@todo_image)
+![image](https://github.com/user-attachments/assets/8a08df9e-213a-4545-a93d-43da8a49b16c)
 
 ### Basic USD file references
 
@@ -205,12 +203,10 @@ Do this in three phases:
     *   Workflow - additional procedural prefabs will be available for content creators to use in the Editor.
 
 ### Simple Example
-
-![](@todo_image)
+![image](https://github.com/user-attachments/assets/2eaf9c33-0fb0-403a-a954-837695c91c6f)
 
 ### Example with References
-
-![](@todo_image)
+![image](https://github.com/user-attachments/assets/ee794185-f07b-4c23-bbb1-99f5c2b94ea7)
 
 Solution in Detail
 ------------------
@@ -225,11 +221,13 @@ Solution in Detail
     3.  Note: [AssImp latest has compiler error](https://github.com/assimp/assimp/pull/5693)
 2.  Add USD File Types to Asset Importer Settings
     1.  Edit _Registry/sceneassetimporter.setreg_ to process _usd, usda, usdz, usdc_ file types.
-    2.  _![](@todo_image)_
+    2.  ![image](https://github.com/user-attachments/assets/fb1a4fea-c13b-4e0d-9044-58374b2b6d4c)
+
 3.  Run Asset Processor
     1.  Allow asset processor to digest USD files, such as the toy\_biplane.usd file here.
     2.  [![](@todo_image)toy\_biplane\_idle.usdz](@todo_image)
-    3.  ![](@todo_image)
+    3.  ![image](https://github.com/user-attachments/assets/6eeacba2-afe2-4f22-95a2-0dc9b210a917)
+
 
 At this point, USDs containing just geometry will load, however AssetProcessor will fail to create a product for a simple USD which references that very same geom file.
 
@@ -246,9 +244,7 @@ prepend references = @suzanne.usdc@</Suzanne/Suzanne>
   
 
 [![](@todo_image)suzanne.usdc](@todo_image) [![](@todo_image)usdObj-001.usda](@todo_image)
-
-![](@todo_image)
-
+![image](https://github.com/user-attachments/assets/08feb54f-61e1-4faf-ac98-864a0d3f85b0)
 
 ```
 Warning | The builder (Scene Builder) has not indicated it handled outputting product dependencies for file Assets/usdObj-001.usda.  This is a programmer error.
@@ -268,16 +264,8 @@ The Assimp scene builder returns the sub-meshes and O3D breaks them out into sep
 
 Current: FBX Scene File to O3DE Entity
 
-[
+![image](https://github.com/user-attachments/assets/7ccf90e4-ec91-42fe-bbef-5f40b3c807c0)
 
-](@todo_image)[
-
-](@todo_image)
-
-[
-
-
-](#)
 
 #### After Phase 2, USD files can reference other USD or OBJ meshes
 
@@ -303,21 +291,8 @@ def Xform "Xform"
     ...
 }
 ```
-  
 
-Phase 1 w/ References
-
-[
-
-](@todo_image)[
-
-](@todo_image)
-
-[
-
-
-](#)
-
+![image](https://github.com/user-attachments/assets/9c5f4ddd-101b-4b2f-8da8-66daffbd2340)
 1.  Update Assimp to support some passthroughs we would need for USD support, specifically a way to override asset resolving.
     1.  See USD documentation on Asset Resolution:
         1.  [https://graphics.pixar.com/usd/release/glossary.html#usdglossary-assetresolution](https://graphics.pixar.com/usd/release/glossary.html#usdglossary-assetresolution)
@@ -348,19 +323,8 @@ Phase 1 w/ References
         More Information: [Accessing Reference File Geom · Issue #186 · lighttransport/tinyusdz (github.com)](https://github.com/lighttransport/tinyusdz/issues/186)
         
 3.  From here, the current O3DE pipeline would take over, we would consume this flattened scene.
-    1.  Phase 2: USD w/ References Input/Output
-        
-        [
-        
-        ](@todo_image)[
-        
-        ](@todo_image)
-        
-        [
-        
-        
-        ](#)
-        
+    1.  ![image](https://github.com/user-attachments/assets/e4aac22e-0ec1-463a-96a6-a2b3fbfe7ec7)
+
 
 ### Phase 3 - Prefab output mimicking USD relationship graph
 
