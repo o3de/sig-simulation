@@ -79,11 +79,10 @@ Required O3DE Knowledge
 *   Familiarity with O3DE Assimp integration.
     *   [o3de/Code/Tools/SceneAPI/SDKWrapper/AssImpSceneWrapper.cpp at bbc8fa583c34186a9c3ede51b2d6254701c4afca · o3de/o3de (github.com)](https://github.com/o3de/o3de/blob/bbc8fa583c34186a9c3ede51b2d6254701c4afca/Code/Tools/SceneAPI/SDKWrapper/AssImpSceneWrapper.cpp#L91)
     *   Note: You can debug AssetBuilder.exe by enabling --debug and providing USD asset path. (Must have AssetProcessor.exe running)
-        
-        [?](#)
-        
-        `--project-path=``"D:/prj/o3de/AutomatedTesting"` `--debug` `"D:\prj\o3de\AutomatedTesting\Assets\asset.usd"` `--platform pc --tags dx12 --project-name AutomatedTesting --project-cache-path` `"D:\prj\o3de\AutomatedTesting\Cache"`
-        
+
+        ```
+        --project-path="D:/prj/o3de/AutomatedTesting" --debug "D:\prj\o3de\AutomatedTesting\Assets\asset.usd" --platform pc --tags dx12 --project-name AutomatedTesting --project-cache-path "D:\prj\o3de\AutomatedTesting\Cache"
+        ```
 
 USD Terminology
 ---------------
@@ -111,22 +110,16 @@ USD Basics
 ### Basic USD file
 
 This usda file represents a stage that defines two prims: A transform named "hello" and a sphere child of that transform named "world".
+```
+#usda 1.0
 
-[?](#)
-
-`#usda 1.0`
-
-`def Xform` `"hello"`
-
-`{`
-
-`def Sphere` `"world"`
-
-`{`
-
-`}`
-
-`}`
+def Xform "hello"
+{
+    def Sphere "world"
+    {
+    }
+}
+```
 
 Visual representation of this file:
 
@@ -138,66 +131,39 @@ This pair of usda files, from [https://graphics.pixar.com/usd/release/tut\_refer
 
 _Below: RefExample.usda references HelloWorld.usda and overrides world's color._
 
-HelloWorld.usda
-
-[?](#)
-
-`#usda 1.0`
-
-`(`
-
-`defaultPrim =` `"hello"`
-
-`)`
-
-`def Xform` `"hello"`
-
-`{`
-
-`double3 xformOp:translate = (4, 5, 6)`
-
-`uniform token[] xformOpOrder = [``"xformOp:translate"``]`
-
-`def Sphere` `"world"`
-
-`{`
-
-`float3[] extent = [(-2, -2, -2), (2, 2, 2)]`
-
-`color3f[] primvars:displayColor = [(0, 0, 1)]`
-
-`double` `radius = 2`
-
-`}`
-
-`}`
-
+_HelloWorld.usda_
 ```
-RefExample.usda
+#usda 1.0
+(
+    defaultPrim = "hello"
+)
+
+def Xform "hello"
+{
+    double3 xformOp:translate = (4, 5, 6)
+    uniform token[] xformOpOrder = ["xformOp:translate"]
+
+    def Sphere "world"
+    {
+        float3[] extent = [(-2, -2, -2), (2, 2, 2)]
+        color3f[] primvars:displayColor = [(0, 0, 1)]
+        double radius = 2
+    }
+}
 ```
 
-[?](#)
-
-`#usda 1.0`
-
-`over` `"refSphere2"` `(`
-
-`prepend references = @./HelloWorld.usda@`
-
-`)`
-
-`{`
-
-`over` `"world"`
-
-`{`
-
-`color3f[] primvars:displayColor = [(1, 0, 0)]`
-
-`}`
-
-`}`
-
+_RefExample.usda_
+```
+#usda 1.0
+over "refSphere2" (
+    prepend references = @./HelloWorld.usda@)
+    {
+        over "world"
+        {
+            color3f[] primvars:displayColor = [(1, 0, 0)]
+        }
+    }
+```
   
 
 ### Beyond the Basics
@@ -205,7 +171,7 @@ RefExample.usda
 I recommend reading through the USD tutorials here [https://graphics.pixar.com/usd/release/tut\_usd\_tutorials.html](https://graphics.pixar.com/usd/release/tut_usd_tutorials.html), and experimenting in Blender and Nvidia USD Composer with creating or importing scenes and exporting to usda format files.
 
 Note: Blender does not support references:  
-_    "Like the USD exporter, the importer does not yet handle more advanced USD concepts, such as layers and references." [Universal Scene Description - Blender 4.2 Manual](https://docs.blender.org/manual/en/latest/files/import_export/usd.html)_
+_"Like the USD exporter, the importer does not yet handle more advanced USD concepts, such as layers and references." [Universal Scene Description - Blender 4.2 Manual](https://docs.blender.org/manual/en/latest/files/import_export/usd.html)_
 
 Digital content creation (DCC) tools which takes advantage of USD references are Nvidia Isaac Sim, Nvidia USD Composer, and Pixar tooling.  
 
@@ -271,25 +237,22 @@ For example, the _suzanne.usdc_ geometry file will be processed correctly and ge
 
 _usdObj-001.usda which references a separate suzanne.usd geometry file._
 
-[?](#)
-
-`def Mesh` `"suzanne"` `(`
-
-`prepend references = @suzanne.usdc@</Suzanne/Suzanne>`
-
-`)`
-
-`{}`
-
+```
+def Mesh "suzanne" (
+prepend references = @suzanne.usdc@</Suzanne/Suzanne>
+)
+{}
+```
   
 
 [![](@todo_image)suzanne.usdc](@todo_image) [![](@todo_image)usdObj-001.usda](@todo_image)
 
 ![](@todo_image)
 
-[?](#)
 
-`Warning | The builder (Scene Builder) has not indicated it handled outputting product dependencies` `for` `file Assets/usdObj-001.usda.  This is a programmer error.`
+```
+Warning | The builder (Scene Builder) has not indicated it handled outputting product dependencies for file Assets/usdObj-001.usda.  This is a programmer error.
+```
 
 Phase 2 enables referencing...
 
@@ -313,7 +276,6 @@ Current: FBX Scene File to O3DE Entity
 
 [
 
-Embed Link Embed Link to Hipchat, Jira, Confluence
 
 ](#)
 
@@ -323,36 +285,24 @@ While ultimately the same O3DE entity hierarchy is produced, notice how unlike b
 
 _Car.usd_
 
-[?](#)
+```
+def Xform "Xform"
+{
+    def Mesh "carbody" (
+        prepend references = @carbody.usdc@</carbody>){}
 
-`def Xform` `"Xform"`
+    def Mesh "tire_1" (
+        prepend references = @tire.obj@){
+            double3 xformOp:translate = (1, 0, 0)
+        }
 
-`{`
-
-`def Mesh` `"carbody"` `(`
-
-`prepend references = @carbody.usdc@</carbody>){}`
-
-`def Mesh` `"tire_1"` `(`
-
-`prepend references = @tire.obj@){`
-
-`double3 xformOp:translate = (1, 0, 0)`
-
-`}`
-
-`def Mesh` `"tire_2"` `(`
-
-`prepend references = @tire.obj@){`
-
-`double3 xformOp:translate = (0, 1, 0)`
-
-`}`
-
-`...`
-
-`}`
-
+    def Mesh "tire_2" (
+        prepend references = @tire.obj@){
+            double3 xformOp:translate = (0, 1, 0)
+        }
+    ...
+}
+```
   
 
 Phase 1 w/ References
@@ -365,7 +315,6 @@ Phase 1 w/ References
 
 [
 
-Embed Link Embed Link to Hipchat, Jira, Confluence
 
 ](#)
 
@@ -383,19 +332,16 @@ Embed Link Embed Link to Hipchat, Jira, Confluence
         1.  [Load USD as a Layer](https://github.com/lighttransport/tinyusdz/blob/83b4ebc90761e60444e55611238fff6cfb6a62c9/examples/tusdcat/main.cc#L149)
         2.  [Do compositions (it also returns a layer)](https://github.com/lighttransport/tinyusdz/blob/83b4ebc90761e60444e55611238fff6cfb6a62c9/examples/tusdcat/main.cc#L212)
         3.  Then [construct Stage from Layer](https://github.com/lighttransport/tinyusdz/blob/910c5740008377976a559c4ff1680292475abc85/src/composition.hh#L210) 
-            
-            [?](#)
-            
-            `bool` `LayerToStage(``const` `Layer &layer, Stage *stage`
+
+            ```
+            bool LayerToStage(const Layer &layer, Stage *stage
+            ```
             
         4.  Then call  `tinyusdz::tydra::ListPrims `
-            
-            [?](#)
-            
-            `std::map<std::string,` `const` `tinyusdz::GeomMesh*> meshmap;`
-            
-            `tinyusdz::tydra::ListPrims(stage, meshmap);`
-            
+            ```
+            std::map<std::string, const tinyusdz::GeomMesh*> meshmap;
+            tinyusdz::tydra::ListPrims(stage, meshmap);
+            ```
             Note: USD can reference other USDs or geometry from other file types (example: obj). As long as the file type is supported by Assimp, we can load this geom and add it to the final flattened Assimp scene.
             
         
@@ -412,7 +358,6 @@ Embed Link Embed Link to Hipchat, Jira, Confluence
         
         [
         
-        Embed Link Embed Link to Hipchat, Jira, Confluence
         
         ](#)
         
