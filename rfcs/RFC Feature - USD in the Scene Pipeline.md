@@ -525,7 +525,7 @@ Allow developers to read generic scene information, and inject custom components
 Convert O3DE prefabs to USD files
 ---------------------------------
 
-This initial work would not include the ability to create USD files from O3DE content, like prefabs. A prefab to USD converter could be the first step towards replacing prefabs with USD entirely. 
+This initial work would not include the ability to create USD files from O3DE content, like prefabs. A prefab to USD converter could be the first step towards replacing prefabs with USD entirely. This would give O3DE the ability to modify the imported USD so that the source DCC could receive O3DE specific properties in order to create a back-and-forth workflow.
 
 This is something that could be looked at long term.
 
