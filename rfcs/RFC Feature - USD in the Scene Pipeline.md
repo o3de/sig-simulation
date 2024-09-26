@@ -183,24 +183,34 @@ Build support for USD into the scene pipeline.
 
 Do this in three phases:
 
-1.  Upgrade O3DE to use Assimp's latest implementation
-    1.  Input: single USD geometry files that don't use layers or references
-    2.  Output: azmodel containing the USDs geometry 
-2.  Contribute back to Assimp and update scene builder to load USD files with references. Stages are flattened by adding in reference geometry. O3DE then processes USD like FBX and other scene file formats.
-    1.  Input: USD files which contains a hierarchy of references to other geometry inside of other USD files 
-    2.  Output: Flattened azmodel containing the geometry from the multiple USD files inside one azmodel file
-3.  Contribute back to Assimp giving API option to flatten stages or keep reference geom separate. Update O3DE to create a procedural prefab that mimics the relationship graph of USD files by matching models and transforms. This could be expanded later to allow O3DE developers to translate USD properties into O3DE component properties as well as add advanced shaders/materials.
-    1.  Input: USD files which contains a hierarchy of references to other geometry inside of other USD files
-    2.  Output: Procedural prefabs generated per USD. Root prefab preserves the hierarchy of the original USD.
+1.  Single USD
+    1.  Upgrade O3DE to use Assimp's latest implementation
+    2.  Input: single USD geometry files that don't use layers or references
+    3.  Output: azmodel containing the USDs geometry 
+2.  USD with References
+    1.  Update Assimp scene tree with tags for referenced USD files 
+    2.  Update O3DE scene builder to load USD files and look for reference tags.
+    3.  Update O3DE to create a procedural prefab that mimics the relationship graph of USD files by matching models and transforms
+    4.  Input: USD files which contains a hierarchy of references to other geometry inside of other USD files 
+    5.  Output: Procedural prefabs generated for the root USD as well as referenced USDs. Root prefab preserves the hierarchy of the original USD.
+3.  USD with Variants 
+    1.  Updated Assimp scene tree with tags for variants within a USD
+    2.  Update O3DE scene builder to load USD files and look for variants
+    3.  Input: USD file which contains X variants
+    4.  Output: 
+            1. X meshes and X prefabs generated for each variant
+            2. Prefabs which references a variant in its hierarchy will nest 1 of the prefab variants
 
 ### Why these three phases?
 
 *   Phase 1 is extremely fast.
-*   The work for phase 2 is used in phase 3, so there won't be much wasted effort here.
 *   Once phase 2 is completed, there's great benefits to using USD: content creators can start splitting up content on their end.
-*   Benefits of phase:
+*   Benefits of phase 2:
     *   Performance - asset processing time, and hard drive space used by product assets: We won't need to re-create product assets, such as models, that are referenced by multiple other USD files.
     *   Workflow - additional procedural prefabs will be available for content creators to use in the Editor.
+*   Phase 3 and beyond nice-to-have. 
+    *   Variants are advanced so makes sense to break them out into a later phase.
+    *   Avoid variant explosion by only selecting 1 of many variants when generating procedural prefabs
 
 ### Simple Example
 ![image](https://github.com/user-attachments/assets/2eaf9c33-0fb0-403a-a954-837695c91c6f)
@@ -252,9 +262,9 @@ Warning | The builder (Scene Builder) has not indicated it handled outputting pr
 
 Phase 2 enables referencing...
 
-### Phase 2 - Update Assimp to support flattened USD with references
+### Phase 2 - Update Assimp to support USD with references
 
-Update Assimp to read USDs, composite all sub-layers and references and flatten all the meshes into one Assimp scene. O3DE will treat the root USD as one big mesh.
+Update Assimp to read USDs, composite all sub-layers and tag references in Assimp scene. O3DE will parse the Assimp tree to find references and spin off procedural prefabs.
 
 #### The Current Setup
 
@@ -297,8 +307,14 @@ def Xform "Xform"
     1.  See USD documentation on Asset Resolution:
         1.  [https://graphics.pixar.com/usd/release/glossary.html#usdglossary-assetresolution](https://graphics.pixar.com/usd/release/glossary.html#usdglossary-assetresolution)
         2.  [https://graphics.pixar.com/usd/release/api/ar\_page\_front.html](https://graphics.pixar.com/usd/release/api/ar_page_front.html)
-2.  Update Assimp to generate an Assimp scene by flattening and resolving the O3DE scene
-    1.  Today a USD loaded via Assimp returns a scene, but if that scene references other USD files, the scene won't contain the geometry of the references. Update Assimp to recursively find references and mark them as a file dependency.
+2.  Update Assimp to generate an Assimp scene containing a way to recognize references
+    1.  Today a USD loaded via Assimp returns a scene, but if that scene references other USD files, the scene won't contain the geometry of the references. Update Assimp to recursively find references and tag them as a reference (include necessary data such as file path, and reference name)
+    1.  Assimp outputs the scene graph like it currently does, but when it hits a reference, it annotates that node in the scene graph with a property that describes the reference.
+        1.  Assimp::Scene root "kitchen"
+            1.  child 01
+                1.  Name: "spoon 01"
+                2.  Transform: <translation>, <rotation>, <scale>
+                3.  Reference: "c:/project/spoon.usd"
         
         TinyUSDZ, the 3rd Party USD library used by Assimp, has methods for discovering references geometry.
         
@@ -317,24 +333,45 @@ def Xform "Xform"
             std::map<std::string, const tinyusdz::GeomMesh*> meshmap;
             tinyusdz::tydra::ListPrims(stage, meshmap);
             ```
-            Note: USD can reference other USDs or geometry from other file types (example: obj). As long as the file type is supported by Assimp, we can load this geom and add it to the final flattened Assimp scene.
+            Note: USD can reference other USDs or geometry from other file types (example: obj). As long as the file type is supported by Assimp, Assimp can tag it, and O3DE can load the geom and add it to the procedural prefab.
             
         
         More Information: [Accessing Reference File Geom · Issue #186 · lighttransport/tinyusdz (github.com)](https://github.com/lighttransport/tinyusdz/issues/186)
         
-3.  From here, the current O3DE pipeline would take over, we would consume this flattened scene.
+3.  From here, the current O3DE pipeline would take over, we would consume this scene.
     1.  ![image](https://github.com/user-attachments/assets/e4aac22e-0ec1-463a-96a6-a2b3fbfe7ec7)
+    2.  Update Create Jobs in the scene builder to output job dependencies on referenced USD files.
+    3.  [See FAQ for why we need both source and job dependencies](#USDintheScenePipeline-Whydoweneedbothsourcedependenciesandjobdependenciesforreferences?).
+    4.  Job dependencies will be needed at this point because product assets from one USD file (prefabs, models, etc) will be referenced by other USD files to mimic the USD relationship graph.
+    5.  Update the scene builder to generate USD based procedural prefabs.  
+        1.  We will need to define what these look like. [We may need additional features from procedural prefabs to hit our end goals](https://wiki.agscollab.com/display/lmbr/USD+in+the+Scene+Pipeline#USDintheScenePipeline-WhatdoweneedfromproceduralprefabsforUSDtobefullyfunctional?).
 
+### Phase 3 - Update Assimp to support USD with Variants
 
-### Phase 3 - Prefab output mimicking USD relationship graph
+Variants are switchable references. Ideally, an O3DE component could provide a drop down in editor to quickly select from a list of variants within a variant set, but this phase simply recognizes variants in order to generate a mesh and prefab for each. Any root USD referencing a variant set will make a single variant selection.
+1.  Update Assimp to generate an Assimp scene containing a way to recognize variant sets, via tagging
+    1.  Assimp outputs the scene graph like it currently does, but when it hits a variant, it annotates that node in the scene graph with a property.
+        1.  Assimp::Scene root "kitchen"
+            1.  child 01
+                1.  Name: "spoon 01"
+                2.  Transform: <translation>, <rotation>, <scale>
+                3.  Reference: "c:/project/spoon.usd"
+                4.  Variant: "WoodenSpoonA"
+2.  O3DE pipeline would consume this scene
+    1.  Update scene builder to look for "variant set" and "variant" tags
+    2.  Update scene builder to generate a procedural prefab for each variant in a variant set
+    3.  Update scene builder so root USD prefabs referencing a variant set (referenced inline or another .usd file) will have a variant selected for them in their procedural prefab
+        1.  In instances where the USD calls out a variant set, but no selection, the 1st variant in the variant set list will be selected
+    4.  Do not try to combine
+        1.  A single chair.usd becomes:
+            1.  chair.procprefab 
+            2.  chairback_01.procprefab -> chairback_01.atommesh
+                ...
+            3.  chaircushion_01.procprefab -> chaircushion_01.atommesh
 
-*   Add a feature flag to toggle USD flattening off, so we can deliver the rest of this work iteratively.
-*   Update Create Jobs in the scene builder to output job dependencies on referenced USD files.
-    *   [See FAQ for why we need both source and job dependencies](#USDintheScenePipeline-Whydoweneedbothsourcedependenciesandjobdependenciesforreferences?).
-    *   Job dependencies will be needed at this point because product assets from one USD file (prefabs, models, etc) will be referenced by other USD files to mimic the USD relationship graph.
-*   Update the scene builder to generate USD based procedural prefabs.  
-    *   We will need to define what these look like. [We may need additional features from procedural prefabs to hit our end goals](https://wiki.agscollab.com/display/lmbr/USD+in+the+Scene+Pipeline#USDintheScenePipeline-WhatdoweneedfromproceduralprefabsforUSDtobefullyfunctional?).
-*   Decide if we want to either keep the feature flag for USD flattening and turn it off by default, or remove the flag and remove USD flattening support in process job.
+Note: Variants are not always meshes, they can also just be basic overrides for transforms, material properties, etc. 
+We should support transforms, but material properties and beyond will wait for future roadmap.
+
 
 Alternate Solutions
 ===================
@@ -378,7 +415,7 @@ Do we need to emit references to other USD files as job dependencies, or can the
 
 If we're able to fully rely on procedural prefabs to manage the composition of USD file references, and we're able to predict the sub IDs of products from other USD files, then we may not need to emit these references as source dependencies.
 
-USD has support for [abstract base objects](https://wiki.agscollab.com/display/lmbr/USD+Investigation#USDInvestigation-AbstractObjects), that function sort of as inverted overrides. Our prefab system does not have a similar concept, so we may need to output job or source dependencies to use this information to build a prefab hierarchy. We may find that we instead need to add this sort of functionality to prefabs.
+USD has support for abstract base objects, that function sort of as inverted overrides. Our prefab system does not have a similar concept, so we may need to output job or source dependencies to use this information to build a prefab hierarchy. We may find that we instead need to add this sort of functionality to prefabs.
 
 ### Example
 
@@ -464,10 +501,27 @@ Out of Scope / Long Term Work
 
 Advanced shaders and materials
 ------------------------------
-
 For our initial deliverable, we will generate basic O3DE physically based rendering materials.
 
 However, the options for shaders and materials from USD files are much bigger than that. As we wrap up our first set of work to support USD, we'll want to start planning what a more fully featured material and shader pipeline from USD files could look like.
+
+Extra USD Properties and O3DE Components
+------------------------------
+Allow developers to read generic scene information, and inject custom components into the procedural prefabs generated by importing USD files. O3DE would ship with built-in components. 
+1.  Update Assimp to output USD property data
+        1.  Assimp::Scene root "kitchen"
+            1.  child 01
+                1.  Name: "spoon 01"
+                2.  Transform: <translation>, <rotation>, <scale>
+                3.  Reference: "c:/project/spoon.usd"
+                4.  Variant: "WoodenSpoonA"
+                5.  NEW: Other user data/properties/overrides
+
+1.  O3DE scene system already supports storing generic info into each scene node
+
+Editor Variant Selection Dropdown 
+------------------------------
+Allow designers to select from a list of available variants from within the editor when a variant set is included in a USD
 
 Convert O3DE prefabs to USD files
 ---------------------------------
