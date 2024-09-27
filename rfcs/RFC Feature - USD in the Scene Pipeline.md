@@ -345,6 +345,14 @@ def Xform "Xform"
     4.  Job dependencies will be needed at this point because product assets from one USD file (prefabs, models, etc) will be referenced by other USD files to mimic the USD relationship graph.
     5.  Update the scene builder to generate USD based procedural prefabs.  
         1.  We will need to define what these look like. [We may need additional features from procedural prefabs to hit our end goals](https://wiki.agscollab.com/display/lmbr/USD+in+the+Scene+Pipeline#USDintheScenePipeline-WhatdoweneedfromproceduralprefabsforUSDtobefullyfunctional?).
+    6.  USDs commonly reference files outside of their O3DE project. We should generate AssetProcessor errors to inform users to copy external USD references to their local project folder.
+        1.  Remote reference example from Nvidia's Isaac Sim:
+        ```
+        def Xform "A1" (
+            prepend references = @omniverse://localhost/NVIDIA/Assets/Isaac/2023.1.1/Isaac/Robots/Unitree/a1.usd@
+        )
+        ```
+        
 
 ### Phase 3 - Update Assimp to support USD with Variants
 
