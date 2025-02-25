@@ -31,7 +31,96 @@ Standardization would improve user experience when using their validation, testi
 
 - If there is any new terminology, it should be defined here. -->
 
+The ROS 2 simulator that is compatible with simulation interfaces has a number of requirements to follow.
+
+It needs to advertise supported features via the ROS 2 service [GetSimulatorFeatures.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSimulatorFeatures.srv)
+That service in its response provides the caller with a list of features [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)
+In this RFC we are proposing to support the following features:
+
+ - SPAWNING
+ - DELETING
+ - NAMED_POSES
+ - POSE_BOUNDS
+ - ENTITY_BOUNDS
+
+ - ENTITY_STATE_LISTING
+ - ENTITY_STATE_SETTING
+
+ - SIMULATION_RESET
+ - SIMULATION_RESET_TIME
+ - SIMULATION_RESET_SPAWNED
+
+ - SIMULATION_PAUSE
+
+We do not plan to support the moment:
+ - SIMULATION_RESET_STATE
+ - STEP_SIMULATION_SINGLE
+ - STEP_SIMULATION_MULTIPLE
+ - STEP_SIMULATION_ACTION
+
+Following formats will be supported for spawnaning (field `spawn_formats` of [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)):
+```
+[`.spawnables`]
+```
+
+**Note** other formats e.g. `URDF` and `SDF` are supported by ROS 2 Gem but only in Editor. 
+Those tools are not available in the game mode, so spawning `SDF` and `URDF` would require:
+ - Handling mesh importing in Game Launcher and preparing it to use with Mesh Feature processor
+ - Creating materials and texture assets in runtime
+ - PhysX (or other Physics engine) collider mesh cooking with decomposition.
+
+Such feature, would be usefull, but it is out of scope of this RFC.
+
 ### Technical design description:
+
+Spawning, gathering information and despawning will be carried by 
+`ROS 2 Entity manager`.
+This manager will be a system component that will be part of ROS 2 Gem.
+It will advertise following services:
+
+#### GetSpawnables
+Service definition : [GetSpawnables](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSpawnables.srv)
+```
+# Return a list of resources which are valid as SpawnEntity uri fields (e.g. visible to or registered in simulator).
+# This interface is an optional extension and might not be implemented by your simulator, check the result_code.
+
+string[] sources                                    # Optional field for additional sources (local or remote) to search.
+                                                    # By default, each simulator has visibility of spawnables through
+                                                    # some mechanisms, e.g. a set of paths, registered assets etc.
+                                                    # Since the simulator cannot possibly look everywhere,
+                                                    # this field allows the user to specify additional sources.
+                                                    # Unrecognized values are listed as such in the result.error_message,
+                                                    # but do not hinder success of the response.
+                                                    # Sources may include subcategories and be simulator-specific.
+
+---
+
+Result result
+Spawnable[] spawnables                              # Spawnable objects with URI and additional information.
+```
+Definition of individual spawnable [Spawnable.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/Spawnable.msg)
+```
+# Robot or other object which can be spawned in simulation runtime.
+
+string uri                                # URI which will be accepted by SpawnEntity service.
+string description                        # Optional description for the user, e.g. "robot X with sensors A,B,C".
+Bounds spawn_bounds                       # Optional spawn area bounds which fully encompass this object.
+```
+
+This service is advertising available spawnables that can be used in simulation.
+We will take asset catalog to find spawnables. 
+There is usefull API in the Engine to get products assets:
+```cpp
+ AZ::Data::AssetCatalogRequestBus::Broadcast(&AZ::Data::AssetCatalogRequests::EnumerateAssets, nullptr, enumerateCallback, nullptr);
+```
+Asset catalog contains product assets (such as spawnables, azmodel, azbuffer).
+We will introduce a product assets called `SimulationInfo`.
+
+
+
+#### GetEntitiesStates
+Service definition :  [GetEntitiesStates](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/SetEntityState.srv)
+- 
 
 <!-- - Explain the technical portion of the work in enough detail that members can implement the feature. 
 
