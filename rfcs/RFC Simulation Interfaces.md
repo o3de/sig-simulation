@@ -14,7 +14,7 @@ As a rule of thumb, receiving encouraging feedback from long-standing project de
 ### Summary:
 <!-- Single paragraph explanation of the feature -->
 
-There is an effort at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1) to standardize simulation interfaces existing robotics simulators in [ROS 2](https://docs.ros.org/en/jazzy/index.html).
+This RFC is a follow-up to an effort at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1) to standardize simulation interfaces existing robotics simulators in [ROS 2](https://docs.ros.org/en/jazzy/index.html). Current implementation of similar interfaces is limited to ROS 2 Spawner Component, that utilizes gazebo messages for ROS 2 communication. Proposed approach includes three new Components that will fulfill the design presented at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1), and that are planned to be developed alongside updates to simulation interfaces. Backward compatibility will be ensured for ROS2SpawnerComponent and ROS2ContactSensor - they will be available through CMake configuration.
 
 
 ### What is the relevance of this feature?
@@ -44,7 +44,7 @@ There is a terminology that was created in [RFC-410](https://github.com/ros-infr
 |Tag              | A string that allows filtering entities and named poses
 
 
-The implementation will be split into three (or more system components):
+The implementation will be split into three (or more) system components:
 - ROS 2 Entities manager \
  It will be responsible for the lifetime of spawned objects, it will cache initial positions.
 - ROS 2 Named poses manager \
@@ -52,12 +52,14 @@ The implementation will be split into three (or more system components):
 - ROS 2 Simulator manager \
  It will be responsible for modifying the global state of the simulation (e.g., pausing, reloading).
 
-We will decouple the implementation of those managers from the ROS 2 service.
-Every manager will need to expose public methods that will be callable both from C++ and ROS 2.
+We will decouple the implementation of those features from their ROS 2 interfaces.
+Every manager will need to expose public methods that:
+- will be callable from C++,
+- will be handled through dedicated ROS 2 interface and exposed as service.
 The purpose of that approach is to enable testability without the need for a ROS domain. 
 
 # ROS 2 API
-In this section, a detailed plan of the implementation with potential limitations is presented.
+This section presents the detailed plan for implementation, including potential limitation.
 
 ## GetSimulationFeatures service
 
@@ -88,7 +90,7 @@ We do not plan to support the moment:
 
 Following formats will be supported for spawning (field `spawn_formats` of [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)):
 ```
-[`.spawnables`]
+[`.spawnable`]
 ```
 
 **Note** Other formats e.g. `URDF` and `SDF` are supported by ROS 2 Gem, but only in Editor. 
@@ -136,11 +138,11 @@ Bounds spawn_bounds                       # Optional spawn area bounds which ful
 
 This service advertises available spawnables that can be used in simulation.
 We will utilize the asset catalog to find those spawnables. 
-There is a useful API in the Engine to get products assets from the asset catalog:
+There is a useful API in the Engine to get product assets from the asset catalog:
 ```cpp
 AZ::Data::AssetCatalogRequests::EnumerateAssets
 ```
-The asset catalog contains product assets (such as `.spawnables`, `.azmodel`, `.azbuffer`).
+The asset catalog contains product assets (such as `.spawnable`, `.azmodel`, `.azbuffer`).
 We will introduce another product asset called `.simulationinfo`. 
 This asset will contain necessary data about Prefab that can be spawned or adjusted by Simulation Interfaces.
 
@@ -175,7 +177,7 @@ A simulation expert who wants to create a robot (or other simulation-ready asset
    * and hand-fill bounds (e.g., sphere radius),
 - export simulation with the export script and [bundle assets](https://docs.o3de.org/docs/user-guide/packaging/asset-bundler/)
 
-A ROS 2 user who calls the `GetSpawnables` service against GameLauncher will trigger the following sequence:
+A simulation interfaces user who calls the `GetSpawnables` service against GameLauncher will trigger the following sequence:
 - a call to the asset catalog to find all product assets of the type `.simulationinfo`.
 - The `ROS 2 Entity manager` will aggregate found assets and will prepare a response that will contain:
    * `uri` as `spawnable://@cache@/robot/foorobot.spawnable`
@@ -246,25 +248,25 @@ The ROS 2 user who wants to spawn a new object in their simulation has to have a
 Spawning assets from the file system e.g., `spawnable://home/michalpelka/robots/FooRobot.spawnables` will not be supported.
 
 With that URI `ROS 2 Entity Manager` will find respective Asset Id.
-Next, the [SpawnableEntitiesDefinition](https://github.com/o3de/o3de/blob/152bc0a1851d881fe735adf54ec93e1ad7875b11/Code/Framework/AzFramework/AzFramework/Spawnable/SpawnableEntitiesInterface.h#L334-L333) interface will be utilized to create a spawn ticket and spawn.
+Next, the [SpawnableEntitiesDefinition](https://github.com/o3de/o3de/blob/152bc0a1851d881fe735adf54ec93e1ad7875b11/Code/Framework/AzFramework/AzFramework/Spawnable/SpawnableEntitiesInterface.h#L334-L333) interface will be utilized to create a spawn ticket and spawn entity.
 
 During spawning the spawned O3DE entities  will be modified:
 - change the name of the root entity to that given by the `name` field,
 - [Transform Component](https://docs.o3de.org/docs/user-guide/components/reference/transform/) of the root entity will modified to reflect the value of the `initial_pose` field,
 - [ROS2 Frame](https://www.docs.o3de.org/docs/user-guide/components/reference/ros2/core/ros2-frame/) to set correct namespace.
 - A component called `SimulationInfoComponent` will be created and attached to the root entity. 
- That component will be used to cache information in `simulationinfo` to be easily accessible in the future.
+ That component will be used to cache information from `simulationinfo` to be easily accessible in the future.
 - [TagComponent](https://www.docs.o3de.org/docs/user-guide/components/reference/gameplay/tag/) from LmbrCentral gem at root entity will be created (if not present in prefab).
-- TagComponent will be updated with a list of new tags.
+- TagComponent will be updated with a list of tags from 'simulationinfo'.
 
 
 `SimulationInfoComponent` will be handling a `SimulationInfoComponentRequestBus`.
-`SimulationInfoComponentRequestBus` will have a unique, string key, which will be the resulting name of spawned entity.
-This bus will allow to aggregate all handling entities, and provide and API to find all spawned entities, get their state.
+`SimulationInfoComponentRequestBus` will have a unique string key that will come from the name of spawned entity.
+This approach will result in a centralized aggregation of entities information, and will provide an API to i.a. find all spawned entities get their states.
 
 ## GetEntities service
 
-The service allows to discover of spawned entities.
+This service provides an access to a list of all spawned entities.
 Service definition :  [GetEntities](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntities.srv )
 
 ```
@@ -290,7 +292,7 @@ string name                                 # Entity unique name.
 ```
 
 We will serve this by calling `SimulationInfoComponentRequestBus` with `AZ::EBusAggregateResults`. 
-With that, we will obtain a AZStd::vector of EntityId, that can be converted to a list of entity names.
+With that, we will obtain a 'AZStd::Vector' of 'AZ::EntityId', that can be converted to a list of entity names.
 
 ## GetEntitiesStates service
 
@@ -329,9 +331,9 @@ There will be more calls to :
  - [TransformComponentRequests](https://github.com/o3de/o3de/blob/42d375dd99b972400f9f26bfec7e3444088f3398/Code/Framework/AzCore/AzCore/Component/TransformBus.h) to find current pose,
  - [ROS2FrameBus.h](https://github.com/o3de/o3de-extras/blob/development/Gems/ROS2/Code/Include/ROS2/Frame/ROS2FrameBus.h) to find frame id.
 
-**Note !** acceleration is will not be filled, and will not be supported.
+**Note !** Acceleration is will not be filled, and will not be supported.
 
-#### SetEntityState service
+## SetEntityState service
 
 This service allows modifying the state of the chosen entity.
 
@@ -666,7 +668,7 @@ If transition is in progress (e.g. reloading level or despawning), the old state
 
 
 
-## Retired components in ROS 2 Gem
+## Deprecated components in ROS 2 Gem
 
 During this effort some components will be retired, and some moved outside of scope of supported and canonical repos.
 
@@ -676,7 +678,7 @@ The ROS2Spawner component will be retired and hidden away from users with the CM
 This component can co-exist with managers for Simulation Interfaces, but ROS 2 package that the ROS2Spawner requires will be removed from upcoming ROS 2 distribution (Kilted Kaiju).
 The said package (`gazebo_msgs`) will be replaced by `simulation_interfaces`.
 The component will be retired (instead of completely removed from the codebase) to make the transition to Simulation interfaces an easier experience.
-However, using ROS2Spawner component will require a few extra steps (after the EOL of the gazebo_msgs package):
+However, using ROS2Spawner component will require a few extra steps (after the EOL of the `gazebo_msgs` package):
 - cloning and building the latest [gazebo_ros_pkgs/gazebo_msgs](https://github.com/ros-simulation/gazebo_ros_pkgs/tree/3.9.0/gazebo_msgs)
 - sourcing custom workspace
 - setting CMake flag
@@ -719,7 +721,7 @@ It was explained in great detail in the section [ROS 2 API](#ros-2-api).
 ### Are there any alternatives to this feature?
 <!-- - Provide any other designs that have been considered. Explain what the impact might be to not doing this.
 - If there is any prior art or approaches with other frameworks in the same domain, explain how they may have solved this problem or implemented this feature. -->
-The effort needs to be taken to adjust the existing code to the eprecation of Gazebo Classic and `gazebo_msgs`.
+The effort needs to be taken to adjust the existing code to the deprecation of Gazebo Classic and `gazebo_msgs`.
 
 
 ### How will users learn this feature?
