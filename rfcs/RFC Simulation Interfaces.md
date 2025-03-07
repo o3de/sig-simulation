@@ -14,7 +14,7 @@ As a rule of thumb, receiving encouraging feedback from long-standing project de
 ### Summary:
 <!-- Single paragraph explanation of the feature -->
 
-This RFC is a follow-up to an effort at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1) to standardize simulation interfaces existing robotics simulators in [ROS 2](https://docs.ros.org/en/jazzy/index.html). Current implementation of similar interfaces is limited to ROS 2 Spawner Component, that utilizes gazebo messages for ROS 2 communication. Proposed approach includes three new Components that will fulfill the design presented at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1), and that are planned to be developed alongside updates to simulation interfaces. Backward compatibility will be ensured for ROS2SpawnerComponent and ROS2ContactSensor - they will be available through CMake configuration.
+This RFC is a follow-up to an effort at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1) to standardize simulation interfaces existing robotics simulators in [ROS 2](https://docs.ros.org/en/jazzy/index.html). Current implementation of similar interfaces is limited to `ROS2SpawnerComponent`, that utilizes *Gazebo* messages for ROS 2 communication. The messages were marked deprecated in the latest ROS 2 release and should be superseded. Proposed approach includes three new *Components* that will fulfill the design presented in [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1), and that are planned to be developed alongside updates to simulation interfaces. Backward compatibility will be ensured for `ROS2SpawnerComponent` and `ROS2ContactSensor` through CMake configuration with the deprecation information.
 
 
 ### What is the relevance of this feature?
@@ -33,15 +33,15 @@ Standardization would improve user experience when using their validation, testi
 
 The feature is an API for handling number of ROS 2 [services](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Services/Understanding-ROS2-Services.html) and [actions](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Actions/Understanding-ROS2-Actions.html).
 
-There is a terminology that was created in [RFC-410](https://github.com/ros-infrastructure/rep/issues/410) in [ros-infrastructure/rep](https://github.com/ros-infrastructure/rep):
+The following terminology that was created in [RFC-410](https://github.com/ros-infrastructure/rep/issues/410) in [ros-infrastructure/rep](https://github.com/ros-infrastructure/rep):
 
-|Term             |    Description                                                                                      |
-|-----------------|-----------------------------------------------------------------------------------------------------|
-|Spawnable        | Robot or other object that can be spawned in simulation runtime.
-|Entity           | Spawned spawnable, it has a unique name.
-|Bound            | A region that is defined by an axis-aligned box shape, convex hull, or a sphere.
-|NamedPose        | SE3 (translation and rotation) transform with a unique name
-|Tag              | A string that allows filtering entities and named poses
+| Term      | Description                                                                      |
+| --------- | -------------------------------------------------------------------------------- |
+| Spawnable | Robot or other object that can be spawned in simulation runtime.                 |
+| Entity    | Spawned spawnable, it has a unique name.                                         |
+| Bound     | A region that is defined by an axis-aligned box shape, convex hull, or a sphere. |
+| NamedPose | SE3 (translation and rotation) transform with a unique name                      |
+| Tag       | A string that allows filtering entities and named poses                          |
 
 
 The implementation will be split into three (or more) system components:
@@ -53,10 +53,10 @@ The implementation will be split into three (or more) system components:
  It will be responsible for modifying the global state of the simulation (e.g., pausing, reloading).
 
 We will decouple the implementation of those features from their ROS 2 interfaces.
-Every manager will need to expose public methods that:
+Every manager will expose public methods that:
 - will be callable from C++,
 - will be handled through dedicated ROS 2 interface and exposed as service.
-The purpose of that approach is to enable testability without the need for a ROS domain. 
+The purpose of that approach is to enable testability without the need for a ROS framework. 
 
 # ROS 2 API
 This section presents the detailed plan for implementation, including potential limitation.
@@ -66,7 +66,7 @@ This section presents the detailed plan for implementation, including potential 
 The simulator needs to advertise supported features via the ROS 2 service [GetSimulatorFeatures.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSimulatorFeatures.srv)
 That service in its response provides the caller with a list of features [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)
 
-In the RFC we are proposing to support the following features:
+The following features are the subject of this RFC:
  - SPAWNING
  - DELETING
  - NAMED_POSES
@@ -83,85 +83,31 @@ In the RFC we are proposing to support the following features:
 
  - SIMULATION_PAUSE
 
-We do not plan to support the moment:
- - STEP_SIMULATION_SINGLE
- - STEP_SIMULATION_MULTIPLE
- - STEP_SIMULATION_ACTION
+The features ` SIMULATION_RESET_STATE, STEP_SIMULATION_SINGLE, STEP_SIMULATION_MULTIPLE, STEP_SIMULATION_ACTION` will be introduced in the next RFC since they require multiple changes in the *PhysX Gem* and *AzPhysics API*. Action [SimulateSteps.action](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/action/SimulateSteps.action) will not be supported.
 
-Following formats will be supported for spawning (field `spawn_formats` of [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)):
-```
-[`.spawnable`]
-```
-
-**Note** Other formats e.g. `URDF` and `SDF` are supported by ROS 2 Gem, but only in Editor. 
-Those tools are not available in the game mode, so spawning `SDF` and `URDF` would require:
- - handling mesh importing in Game Launcher and preparing it to use with Mesh Feature processor,
+Only `[.spawnable]` format will be supported for spawning (field `spawn_formats` of [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)). Other formats, such as `URDF` and `SDF`, are supported only in the Editor mode in ROS 2 Gem. Spawning `SDF` and `URDF` would require support for the Game mode:
+ - handling mesh importing in game mode and preparing it to use with the *Mesh Feature Processor*,
  - creating materials and texture assets in runtime,
  - PhysX (or other Physics engine) collider mesh cooking with decomposition.
 
 Such a feature would be useful, but it is out of the scope of this RFC.
 
-The features ` SIMULATION_RESET_STATE, STEP_SIMULATION_SINGLE, STEP_SIMULATION_MULTIPLE, STEP_SIMULATION_ACTION` will be introduced in the next RFC since they require multiple changes in the PhysX gem and AzPhysics API.
-Action [SimulateSteps.action](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/action/SimulateSteps.action) will not be supported.
-
 ## GetSpawnables service
 
-This service allows users to find simulated spawnables to spawn (place) in the simulation.
+This service allows users to find simulated *spawnables* to spawn (place) in the simulation. \
+Service definition: [GetSpawnables](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSpawnables.srv) \
+Individual *spawnables* definition: [Spawnable.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/Spawnable.msg)
 
-Service definition : [GetSpawnables](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSpawnables.srv)
-```
-# Return a list of resources which are valid as SpawnEntity uri fields (e.g. visible to or registered in simulator).
-# This interface is an optional extension and might not be implemented by your simulator, check the result_code.
-
-string[] sources                                    # Optional field for additional sources (local or remote) to search.
-                                                    # By default, each simulator has visibility of spawnables through
-                                                    # some mechanisms, e.g. a set of paths, registered assets etc.
-                                                    # Since the simulator cannot possibly look everywhere,
-                                                    # this field allows the user to specify additional sources.
-                                                    # Unrecognized values are listed as such in the result.error_message,
-                                                    # but do not hinder success of the response.
-                                                    # Sources may include subcategories and be simulator-specific.
-
----
-
-Result result
-Spawnable[] spawnables                              # Spawnable objects with URI and additional information.
-```
-Definition of individual spawnables [Spawnable.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/Spawnable.msg):
-```
-# Robot or other object which can be spawned in simulation runtime.
-
-string uri                                # URI which will be accepted by SpawnEntity service.
-string description                        # Optional description for the user, e.g. "robot X with sensors A,B,C".
-Bounds spawn_bounds                       # Optional spawn area bounds which fully encompass this object.
-```
-
-This service advertises available spawnables that can be used in simulation.
-We will utilize the asset catalog to find those spawnables. 
-There is a useful API in the Engine to get product assets from the asset catalog:
-```cpp
-AZ::Data::AssetCatalogRequests::EnumerateAssets
-```
-The asset catalog contains product assets (such as `.spawnable`, `.azmodel`, `.azbuffer`).
-We will introduce another product asset called `.simulationinfo`. 
-This asset will contain necessary data about Prefab that can be spawned or adjusted by Simulation Interfaces.
+We will utilize the asset catalog to find the available *spawnables*. The asset catalog contains product assets (such as `.spawnable`, `.azmodel`, `.azbuffer`). We will introduce another product asset called `.simulationinfo`. It will contain necessary data about *prefab* that can be spawned or adjusted by Simulation Interfaces. The Engine's API will be used to get product assets, namely `AZ::Data::AssetCatalogRequests::EnumerateAssets`.
 
 The `.simulationinfo` product asset will be an XML / JSON file (similar to other product assets like `.physxmaterial`) and will contain at least the following information:
+- a description (as a string),
+- bounds (as a variant of the chosen bound region),
+- list of tags,
+- category,
+- Asset ID of the corresponding prefab.
 
- - a description (as a string),
- - bounds (as a variant of the chosen bound region),
- - list of tags,
- - category,
- - Asset ID of the corresponding prefab.
-
-
-The `.simulationinfo` will be created by the asset builder that will be registered by ROS 2 Gem.
-This asset builder will consume source assets called `SimulationInfo` and eventually corresponding prefabs.
-It will create a `SimulationInfo` product asset in the `Cache` directory.
-
-The `SimulationInfo` source asset will be a sidecar (a file with the same filename) to a prefab. 
-It will contain:
-
+The `.simulationinfo` will be created by the asset builder (registered by ROS 2 Gem) based on the `SimulationInfo` source assets and, eventually, the corresponding prefabs. The `SimulationInfo` source asset will be a sidecar (a file with the same filename) to a prefab. It will contain:
  - a description (as a string),
  - bounds (as a variant of the chosen bound region),
  - list of tags,
@@ -170,205 +116,68 @@ It will contain:
 A simulation expert who wants to create a robot (or other simulation-ready asset) needs:
 - design a new prefab using standard O3DE workflow, using all available components,
 - save the prefab with a name e.g., `Robots/FooRobot.prefab`
-- create and fill the `SimulationInfo` file as `Robots/FooRobot.SimulationInfo` using a text editor or some tooling in O3DE:
-   * fill description,
-   * fill tags,
-   * fill category,
-   * and hand-fill bounds (e.g., sphere radius),
+- create and fill the `SimulationInfo` sidecar file as `Robots/FooRobot.SimulationInfo` using a text editor or the O3DE tooling
 - export simulation with the export script and [bundle assets](https://docs.o3de.org/docs/user-guide/packaging/asset-bundler/)
 
-A simulation interfaces user who calls the `GetSpawnables` service against GameLauncher will trigger the following sequence:
-- a call to the asset catalog to find all product assets of the type `.simulationinfo`.
-- The `ROS 2 Entity manager` will aggregate found assets and will prepare a response that will contain:
+A simulation interfaces user who calls the `GetSpawnables` service against GameLauncher will call the asset catalog to find all product assets of the type `.simulationinfo`. The `ROS 2 Entity manager` will aggregate found assets and will prepare a response that will contain:
    * `uri` as `spawnable://@cache@/robot/foorobot.spawnable`
    * the description copied from `Robots/FooRobot.SimulationInfo`,
    * the bound information copied from `Robots/FooRobot.SimulationInfo`,
    * tag list copied from `Robots/FooRobot.SimulationInfo`,
    * category copied from `Robots/FooRobot.SimulationInfo`.
-- Prepared response will be returned to the ROS 2 user.
+Prepared response will be returned to the ROS 2 user.
 
 ## SpawnEntity service
 
-Service allows to spawn entities found previously with `GetSpawnables` service.
+Service allows spawning entities previously found with `GetSpawnables` service. \
+Service definition: [SpawnEntity](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/SpawnEntity.srv)
 
-Service definition [SpawnEntity](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/SpawnEntity.srv):
+The ROS 2 user who wants to spawn a new object in their simulation has to have a valid URI e.g.,`spawnable://@cache@/robot/foorobot.spawnable`. `ROS 2 Entities Manager` will find respective Asset ID based on the URI.
 
-```
-# Spawn an entity (a robot, other object) by name or URI
-
-string name                             # A name to give to the spawned entity.
-                                        # If empty, a name field in the uri file or resource_string will be used,
-                                        # if supported and not empty (e.g. "name" field in SDFormat, URDF).
-                                        # If the name is still empty or not unique (as determined by the simulator),
-                                        # the service returns a generated name in the entity_name response field if the
-                                        # allow_renaming field is set to true. Otherwise, the service call fails and an
-                                        # error is returned.
-bool allow_renaming                     # Determines whether the spawning succeeds with a non-unique name.
-                                        # If it is set to true, the user should always check entity_name response field
-                                        # and use it for any further interactions.
-string uri                              # Resource such as SDFormat, URDF, USD or MJCF file, a native prefab, etc.
-                                        # Valid URIs can be determined by calling GetSpawnables first, and you can check
-                                        # the simulator format support by reading SimulatorFeatures spawn_formats field.
-                                        # If uri field is empty, resource_string must not be empty.
-string resource_string                  # An entity definition file passed as a string.
-                                        # Simulators may support spawning from a file generated on the fly (e.g. XACRO).
-                                        # Check whether it is supported by your simulator through GetSimulatorFeatures.
-                                        # If uri field is not empty, resource_string field will be ignored.
-string entity_namespace                 # Spawn the entity with all its interfaces under this namespace.
-geometry_msgs/PoseStamped initial_pose  # Initial entity pose.
-                                        # The header contains a reference frame, which defaults to global "world" frame.
-                                        # This frame must be known to the simulator, e.g. of an object spawned earlier.
-                                        # The timestamp field in the header is ignored.
-
----
-
-# Additional result.result_code values for this service. Check result.error_message for further details.
-uint8 NAME_NOT_UNIQUE       = 101       # Given name is already taken by entity and allow_renaming is false.
-uint8 NAME_INVALID          = 102       # Given name is invalid in the simulator (e.g. does not meet naming
-                                        # requirements such as allowed characters). This is also returned if name is
-                                        # empty and allow_renaming is false.
-uint8 UNSUPPORTED_FORMAT    = 103       # Format for uri or resource string is unsupported. Check supported formats
-                                        # through GetSimulatorFeatures service, in spawn_formats field.
-uint8 NO_RESOURCE           = 104       # Both uri and resource string are empty.
-uint8 NAMESPACE_INVALID     = 105       # Namespace does not meet namespace naming standards.
-uint8 RESOURCE_PARSE_ERROR  = 106       # Resource file or string failed to parse.
-uint8 MISSING_ASSETS        = 107       # At least one of resource assets (such as meshes) was not found.
-uint8 UNSUPPORTED_ASSETS    = 108       # At least one of resource assets (such as meshes) is not supported.
-uint8 INVALID_POSE          = 109       # initial_pose is invalid, such as when the quaternion is invalid or position
-                                        # exceeds simulator world bounds.
-
-Result result
-string entity_name                      # Spawned entity full name, guaranteed to be unique in the simulation.
-                                        # If allow_renaming is true, it may differ from the request name field.
-```
-
-The ROS 2 user who wants to spawn a new object in their simulation has to have a valid URI e.g.,`spawnable://@cache@/robot/foorobot.spawnable`. 
-
-**Note !**
-Spawning assets from the file system e.g., `spawnable://home/michalpelka/robots/FooRobot.spawnables` will not be supported.
-
-With that URI `ROS 2 Entity Manager` will find respective Asset Id.
 Next, the [SpawnableEntitiesDefinition](https://github.com/o3de/o3de/blob/152bc0a1851d881fe735adf54ec93e1ad7875b11/Code/Framework/AzFramework/AzFramework/Spawnable/SpawnableEntitiesInterface.h#L334-L333) interface will be utilized to create a spawn ticket and spawn entity.
 
-During spawning the spawned O3DE entities  will be modified:
-- change the name of the root entity to that given by the `name` field,
-- [Transform Component](https://docs.o3de.org/docs/user-guide/components/reference/transform/) of the root entity will modified to reflect the value of the `initial_pose` field,
-- [ROS2 Frame](https://www.docs.o3de.org/docs/user-guide/components/reference/ros2/core/ros2-frame/) to set correct namespace.
-- A component called `SimulationInfoComponent` will be created and attached to the root entity. 
- That component will be used to cache information from `simulationinfo` to be easily accessible in the future.
-- [TagComponent](https://www.docs.o3de.org/docs/user-guide/components/reference/gameplay/tag/) from LmbrCentral gem at root entity will be created (if not present in prefab).
-- TagComponent will be updated with a list of tags from 'simulationinfo'.
+**Note !** Spawning assets from the file system e.g., `spawnable://home/username/robots/FooRobot.spawnables` will not be supported.
 
+During spawning, the spawned O3DE entities will be modified as follows:
+- The name of the root entity will reflect the name given by the `name` field,
+- The [TransformComponent](https://docs.o3de.org/docs/user-guide/components/reference/transform/) of the root entity will reflect the value of the `initial_pose` field,
+- The [ROS2FrameComponent](https://www.docs.o3de.org/docs/user-guide/components/reference/ros2/core/ros2-frame/) will reflect the namespace the value of the `entity_namespace` field.
+- A component called `SimulationInfoComponent` will be created and attached to the root entity to cache the information from `simulationinfo` and to make it easily accessible in the future.
+- [TagComponent](https://www.docs.o3de.org/docs/user-guide/components/reference/gameplay/tag/) from LmbrCentral Gem will be created at root entity (if not present) and updated with a list of tags from the `simulationinfo` sidecar.
 
 `SimulationInfoComponent` will be handling a `SimulationInfoComponentRequestBus`.
 `SimulationInfoComponentRequestBus` will have a unique string key that will come from the name of spawned entity.
-This approach will result in a centralized aggregation of entities information, and will provide an API to i.a. find all spawned entities get their states.
+This approach will result in a centralized aggregation of entities' information, and will provide an API to find all spawned entities and get their states.
 
 ## GetEntities service
 
-This service provides an access to a list of all spawned entities.
-Service definition :  [GetEntities](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntities.srv )
+This service provides access to a list of all spawned entities. \
+Service definition: [GetEntities](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntities.srv )
 
-```
-# Get objects in the scene which can be interacted with, e.g. with using SetEntityState.
-# You can get further information about entities through GetEntityInfo and GetEntityState services.
-# There is also a GetEntitiesStates service if you would like to get state for each entity.
-
-EntityFilters filters                               # Optional filters for the query, including name, category, tags,
-                                                    # and overlap filters.
-
----
-
-Result result
-Entity[] entities                                   # All entities matching the filters.
-```
-
-where [Entity](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/Entity.msg) is defined:
-```
-# Entity identified by its unique name. Entities are objects in the simulation such as models and links.
-# Each simulator might define what an entity is in a (slightly) different way.
-
-string name                                 # Entity unique name.
-```
-
-We will serve this by calling `SimulationInfoComponentRequestBus` with `AZ::EBusAggregateResults`. 
-With that, we will obtain a 'AZStd::Vector' of 'AZ::EntityId', that can be converted to a list of entity names.
+We will serve this by calling `SimulationInfoComponentRequestBus` with `AZ::EBusAggregateResults` to obtain a list of `AZ::EntityId`, that can be converted to a list of entity names.
 
 ## GetEntitiesStates service
 
-This service allows users to get the state (speed, location, acceleration) of chosen entities.
+This service allows users to get the state (speed, location, acceleration) of chosen entities. \
+Service definition: [GetEntitiesStates.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntitiesStates.srv)
+Individual entity state definition: [EntityState](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/EntityState.msg)
 
-Service definition :  [GetEntitiesStates.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntitiesStates.srv)
-```
-# Get objects in the scene which can be interacted, e.g. with using SetEntityState.
-# Use GetEntities service instead if EntityState information for all entities is not needed.
+The service handling will be similar to [GetEntities](#GetEntities). Additional calls will be required to fill the state information:
+ - [RigidBodyRequestBus](https://github.com/o3de/o3de/blob/79e1df3990c5554c454d68798a0f3ef94c8ae317/Code/Framework/AzFramework/AzFramework/Physics/RigidBodyBus.h) will be used to find the current twist,
+ - [TransformComponentRequests](https://github.com/o3de/o3de/blob/42d375dd99b972400f9f26bfec7e3444088f3398/Code/Framework/AzCore/AzCore/Component/TransformBus.h) will be used to find the current pose,
+ - [ROS2FrameBus.h](https://github.com/o3de/o3de-extras/blob/development/Gems/ROS2/Code/Include/ROS2/Frame/ROS2FrameBus.h) will be used to find the frame ID.
 
-EntityFilters filters                               # Optional filters for the query, including name, category, tags,
-                                                    # and overlap filters.
-
----
-
-Result result
-Entity[] entities                                   # All entities matching the filters.
-EntityState[] states                                # States for these entities.
-```
-
-where [EntityState](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/EntityState.msg) is:
-```
-# Entity current pose, twist and acceleration
-
-std_msgs/Header header                  # Frame and timestamp for pose and twist. Empty frame defaults to world.
-geometry_msgs/Pose pose                 # Pose in reference frame, ground truth.
-geometry_msgs/Twist twist               # Ground truth linear and angular velocities
-                                        # observed in the frame specified by header.frame_id
-                                        # See https://github.com/ros2/common_interfaces/pull/240 for conventions.
-geometry_msgs/Accel acceleration        # Linear and angular acceleration ground truth, following the same convention.
-```
-
-The service handling will be similar to [GetEntities](#GetEntities). 
-There will be more calls to :
- - [RigidBodyRequestBus](https://github.com/o3de/o3de/blob/79e1df3990c5554c454d68798a0f3ef94c8ae317/Code/Framework/AzFramework/AzFramework/Physics/RigidBodyBus.h) to find current twist,
- - [TransformComponentRequests](https://github.com/o3de/o3de/blob/42d375dd99b972400f9f26bfec7e3444088f3398/Code/Framework/AzCore/AzCore/Component/TransformBus.h) to find current pose,
- - [ROS2FrameBus.h](https://github.com/o3de/o3de-extras/blob/development/Gems/ROS2/Code/Include/ROS2/Frame/ROS2FrameBus.h) to find frame id.
-
-**Note !** Acceleration is will not be filled, and will not be supported.
+**Note !** Acceleration will not be filled, and will not be supported.
 
 ## SetEntityState service
 
-This service allows modifying the state of the chosen entity.
+This service allows modifying the state of the chosen entity. \
+Service definition: [SetEntityState.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/SetEntityState.srv)
 
-Service definition [SetEntityState.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/SetEntityState.srv)
-```
-# Set a state of an object, which will result in an instant change in its pose and/or twist.
-
-Entity entity                           # Entity identified by its unique name as returned by GetEntities / SpawnEntity.
-EntityState state                       # New state to set immediately. The timestamp in header is ignored.
-                                        # Note that the acceleration field may be ignored by simulators.
-
----
-
-Result `result`:
-```
-where [EntityState](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/EntityState.msg) is:
-```
-# Entity current pose, twist and acceleration
-
-std_msgs/Header header                  # Frame and timestamp for pose and twist. Empty frame defaults to world.
-geometry_msgs/Pose pose                 # Pose in reference frame, ground truth.
-geometry_msgs/Twist twist               # Ground truth linear and angular velocities
-                                        # observed in the frame specified by header.frame_id
-                                        # See https://github.com/ros2/common_interfaces/pull/240 for conventions.
-geometry_msgs/Accel acceleration        # Linear and angular acceleration ground truth, following the same convention.
-```
-
-The O3DE EntityId will be discovered by calling `SimulationInfoComponentRequestBus` with the entity name provided in the service request.
-Next, having the EntityId the corresponding API will be called to adjust the state:
- - [TransformComponentRequests](https://github.com/o3de/o3de/blob/42d375dd99b972400f9f26bfec7e3444088f3398/Code/Framework/AzCore/AzCore/Component/TransformBus.h) or 
- [RigidBodyRequestBus](https://github.com/o3de/o3de/blob/79e1df3990c5554c454d68798a0f3ef94c8ae317/Code/Framework/AzFramework/AzFramework/Physics/RigidBodyBus.h) to 
- adjust the position of the simulated entity. 
- - [ROS2FrameBus.h](https://github.com/o3de/o3de-extras/blob/development/Gems/ROS2/Code/Include/ROS2/Frame/ROS2FrameBus.h) to eventually change frame id,
- - [RigidBodyRequestBus](https://github.com/o3de/o3de/blob/79e1df3990c5554c454d68798a0f3ef94c8ae317/Code/Framework/AzFramework/AzFramework/Physics/RigidBodyBus.h) to 
- adjust speed or acceleration.
+The `AZ::EntityId` will be discovered by calling `SimulationInfoComponentRequestBus` with the name provided in the request. Next, the corresponding API will be called to adjust the state of the entity:
+ - [TransformComponentRequests](https://github.com/o3de/o3de/blob/42d375dd99b972400f9f26bfec7e3444088f3398/Code/Framework/AzCore/AzCore/Component/TransformBus.h) or [RigidBodyRequestBus](https://github.com/o3de/o3de/blob/79e1df3990c5554c454d68798a0f3ef94c8ae317/Code/Framework/AzFramework/AzFramework/Physics/RigidBodyBus.h) to adjust the position of the simulated entity.
+ - [ROS2FrameBus.h](https://github.com/o3de/o3de-extras/blob/development/Gems/ROS2/Code/Include/ROS2/Frame/ROS2FrameBus.h) to eventually change the frame ID,
+ - [RigidBodyRequestBus](https://github.com/o3de/o3de/blob/79e1df3990c5554c454d68798a0f3ef94c8ae317/Code/Framework/AzFramework/AzFramework/Physics/RigidBodyBus.h) to adjust the speed or the acceleration.
 
 Note that serving this service is a bit tricky in O3DE.
 Due to the modularity of O3DE, the entities can be moved around in several ways:
@@ -382,15 +191,15 @@ Due to the modularity of O3DE, the entities can be moved around in several ways:
 - Potential 3rd physics engine.
 
 Some of those methods respect calls to `TranformComponentRequests`, but some of them need to call directly methods in the PhysX gem.
-| Method                                 |  TransformComponentRequests API| RigidBodyRequestBus API  | Custom API |
-|----------------------------------------|--------------------------------|--------------------------|------------|
-|Simulated PhysX Rigid Body              |                                | supports                 |            |
-|Kinematic PhysX Rigid Body              |  supports                      |                          |            |
-|TransformComponent  due to parent-child |  supports                      |                          |            |
-|TransformComponent (custom calls)       |                                |                          |            |
-|PhysX character component               |                                |                          |      ?     |
-|PhysX ragdoll                           |                                |                          |      ?     |
-|PhysX articulations                     |                                |                          | supports   |
+| Method                                  | TransformComponentRequests API | RigidBodyRequestBus API | Custom API |
+| --------------------------------------- | ------------------------------ | ----------------------- | ---------- |
+| Simulated PhysX Rigid Body              |                                | supports                |            |
+| Kinematic PhysX Rigid Body              | supports                       |                         |            |
+| TransformComponent  due to parent-child | supports                       |                         |            |
+| TransformComponent (custom calls)       |                                |                         |            |
+| PhysX character component               |                                |                         | ?          |
+| PhysX ragdoll                           |                                |                         | ?          |
+| PhysX articulations                     |                                |                         | supports   |
 
 The correct API needs to be chosen to get the expected outcome it can be quite tricky.
 Let us investigate moving a `Simulated PhysX Rigid Body'.
@@ -419,82 +228,38 @@ The alternative, approach would be to cycle through:
 - Use `TransformBus::Events::SetWorldTM` to change location,
 - enable simulation of [simulated body](https://docs.o3de.org/docs/user-guide/interactivity/physics/nvidia-physx/simulated-bodies/).
 
-The velocity (twist) can be applied using `RigidBodyRequestBus::SetLinearVelocity` and  `RigidBodyRequestBus::SetAngularVelocity`.
-It will be effective against Simulated PhysX Rigid Body and Kinematic PhysX Rigid Body and should give a warning if it called against 
-unsupported type.
-
+The velocity (twist) can be applied using `RigidBodyRequestBus::SetLinearVelocity` and `RigidBodyRequestBus::SetAngularVelocity`.
+It will be effective against Simulated PhysX Rigid Body and Kinematic PhysX Rigid Body and should give a warning if it called against unsupported type.
 
 The acceleration can be applied using `RigidBodyRequestBus::ApplyLinearImpulse` w.r.t object's mass.
 It will be effective against Simulated PhysX Rigid Body and should give a warning if it is called against 
 unsupported type.
 
-**Important :** Currently ROS2 Gem is heavily dependant on PhysX5 (due to SDF importer). The decoupling of those needs to be done in the future.
+**Important :** Currently ROS2 Gem is heavily dependent on PhysX5 (due to SDF importer). The decoupling of those needs to be done in the future.
 
 ## DeleteEntity service
- 
-Despawn previously spawned entity
 
-Service definition [DeleteEntity.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/DeleteEntity.srv)
-```
-# Remove an entity (a robot, other object) from the simulation
+This service allows despawning the previously spawned entities. \
+Service definition: [DeleteEntity.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/DeleteEntity.srv)
 
-Entity entity                         # Entity identified by its unique name with a namespace,
-                                      # as returned by SpawnEntity or GetEntities.
+The `AZ::EntityId` will be discovered by calling `SimulationInfoComponentRequestBus` with the name provided in the request. Next, the corresponding API will be called to despawn and remove the corresponding spawn ticket.
 
----
-
-Result result
-```
-
-The O3DE entity ID and their spawn ticket ID will be discovered by `SimulationInfoComponentRequestBus`.
-Next the component `ROS 2 Entity manager` will be asked to despawn and remove the corresponding spawn ticket.
-
-**Important:** This mechanism will now allow to delete of entities that are part of the level prefab (e.g., prefab instantiated in Editor).
+**Important:** This mechanism will allow to delete the entities that are part of the level prefab (e.g., prefab instantiated in Editor).
 
 ## GetEntityBounds service
 
-Returns bounds of the spawned entity.
+This service allows to get the bounds of the previously spawned entities. \
+Service definition: [GetEntityBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityBounds.srv)
 
-Service definition [GetEntityBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityBounds.srv)
-```
-# Get geometrical bounds for entity. This feature is available if GetSimulatorFeatures includes ENTITY_BOUNDS feature.
-
-Entity entity                         # Entity identified by its unique name as returned by GetEntities / SpawnEntity.
-
----
-
-Result result
-Bounds bounds  
-```
-
-The bounds for particular entities will be obtained by calling `SimulationInfoComponentRequestBus`.
+The bound for the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request.
 
 ## GetEntityInfo service
 
-Returns category, description and tags for spawned entity.
+This service allows to get the category, description and tags for the given entity. \
+Service definition: [GetEntityInfo.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityInfo.srv) \
+Particular entity info definition: [EntityInfo.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/EntityInfo.msg)
 
-Service definition [GetEntityInfo.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityInfo.srv):
-```
-# Get type and other information about an entity.
-
-Entity entity                         # Entity identified by its unique name as returned by GetEntities / SpawnEntity.
-
----
-
-Result result
-EntityInfo info                       # Only valid if result.result_code is OK.
-```
-where [EntityInfo.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/EntityInfo.msg):
-```
-# Entity type and additional information
-
-uint8 category              # Major category for the entity. Extra entity type distinction can be made through tags.
-                            # See EntityCategories for defined category values.
-string description          # optional: verbose, human-readable description of the entity.
-string[] tags               # optional: tags which are useful for filtering and categorizing entities further.
-```
-
-This information will be obtained from `SimulationInfoComponentRequestBus`.
+This information the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request.
 
 ## GetNamedPoses service
 
@@ -583,12 +348,12 @@ Result result
 
 This service will need to use multiple APIs to give results.
 
-|Scope           | Planned API and usage |
-|----------------|--------------------
-|SCOPE_ALL       | ConsoleRequestBus and `LoadLevel` command.
-|SCOPE_SPAWNED   | Internal gem API to destroy all spawn tickets in ROS 2 Entities manager.
-|SCOPE_STATE     | Move all spawned entities to initial poses cached in ROS 2 Entities manager.
-|SCOPE_TIME      | New ROS2Bus call
+| Scope         | Planned API and usage                                                        |
+| ------------- | ---------------------------------------------------------------------------- |
+| SCOPE_ALL     | ConsoleRequestBus and `LoadLevel` command.                                   |
+| SCOPE_SPAWNED | Internal gem API to destroy all spawn tickets in ROS 2 Entities manager.     |
+| SCOPE_STATE   | Move all spawned entities to initial poses cached in ROS 2 Entities manager. |
+| SCOPE_TIME    | New ROS2Bus call                                                             |
 
 ## SetSimulationState service
 
