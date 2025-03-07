@@ -471,7 +471,7 @@ The bounds for particular entities will be obtained by calling `SimulationInfoCo
 
 ## GetEntityInfo service
 
-Returns tags and category of the spawned entity.
+Returns category, description and tags for spawned entity.
 
 Service definition [GetEntityInfo.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityInfo.srv):
 ```
