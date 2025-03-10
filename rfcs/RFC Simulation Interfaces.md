@@ -45,18 +45,14 @@ The following terminology that was created in [RFC-410](https://github.com/ros-i
 
 
 The implementation will be split into three (or more) system components:
-- ROS 2 Entities manager \
- It will be responsible for the lifetime of spawned objects, it will cache initial positions.
-- ROS 2 Named poses manager \
- It will be responsible for aggregating information in the Named Pose Game Component.
-- ROS 2 Simulator manager \
- It will be responsible for modifying the global state of the simulation (e.g., pausing, reloading).
+- `ROS 2 Entities manager`: responsible for the lifetime of spawned objects, it will cache initial positions.
+- `ROS 2 Named poses manager`: responsible for aggregating information in the Named Pose Game Component.
+- `ROS 2 Simulator manager`: responsible for modifying the global state of the simulation (e.g., pausing, reloading).
 
-We will decouple the implementation of those features from their ROS 2 interfaces.
-Every manager will expose public methods that:
+We will decouple the implementation of those features from their ROS 2 interfaces. Every manager will expose public methods that:
 - will be callable from C++,
 - will be handled through dedicated ROS 2 interface and exposed as service.
-The purpose of that approach is to enable testability without the need for a ROS framework. 
+The purpose of that approach is to enable testability without the need for a ROS framework and ensure the whole system can be used with any middleware in the future. 
 
 # ROS 2 API
 This section presents the detailed plan for implementation, including potential limitation.
@@ -83,7 +79,7 @@ The following features are the subject of this RFC:
 
  - SIMULATION_PAUSE
 
-The features ` SIMULATION_RESET_STATE, STEP_SIMULATION_SINGLE, STEP_SIMULATION_MULTIPLE, STEP_SIMULATION_ACTION` will be introduced in the next RFC since they require multiple changes in the *PhysX Gem* and *AzPhysics API*. Action [SimulateSteps.action](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/action/SimulateSteps.action) will not be supported.
+The features *SIMULATION_RESET_STATE*, *STEP_SIMULATION_SINGLE*, *STEP_SIMULATION_MULTIPLE*, *STEP_SIMULATION_ACTION* will be introduced in the next RFC since they require multiple changes in the *PhysX Gem* and *AzPhysics API*. Action [SimulateSteps.action](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/action/SimulateSteps.action) will not be supported.
 
 Only `[.spawnable]` format will be supported for spawning (field `spawn_formats` of [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)). Other formats, such as `URDF` and `SDF`, are supported only in the Editor mode in ROS 2 Gem. Spawning `SDF` and `URDF` would require support for the Game mode:
  - handling mesh importing in game mode and preparing it to use with the *Mesh Feature Processor*,
@@ -136,7 +132,7 @@ The ROS 2 user who wants to spawn a new object in their simulation has to have a
 
 Next, the [SpawnableEntitiesDefinition](https://github.com/o3de/o3de/blob/152bc0a1851d881fe735adf54ec93e1ad7875b11/Code/Framework/AzFramework/AzFramework/Spawnable/SpawnableEntitiesInterface.h#L334-L333) interface will be utilized to create a spawn ticket and spawn entity.
 
-**Note !** Spawning assets from the file system e.g., `spawnable://home/username/robots/FooRobot.spawnables` will not be supported.
+**Note:** Spawning assets from the file system e.g., `spawnable://home/username/robots/FooRobot.spawnables` will not be supported.
 
 During spawning, the spawned O3DE entities will be modified as follows:
 - The name of the root entity will reflect the name given by the `name` field,
@@ -167,7 +163,7 @@ The service handling will be similar to [GetEntities](#GetEntities). Additional 
  - [TransformComponentRequests](https://github.com/o3de/o3de/blob/42d375dd99b972400f9f26bfec7e3444088f3398/Code/Framework/AzCore/AzCore/Component/TransformBus.h) will be used to find the current pose,
  - [ROS2FrameBus.h](https://github.com/o3de/o3de-extras/blob/development/Gems/ROS2/Code/Include/ROS2/Frame/ROS2FrameBus.h) will be used to find the frame ID.
 
-**Note !** Acceleration will not be filled, and will not be supported.
+**Note:** Acceleration will not be filled, and will not be supported.
 
 ## SetEntityState service
 
@@ -235,7 +231,7 @@ The acceleration can be applied using `RigidBodyRequestBus::ApplyLinearImpulse` 
 It will be effective against Simulated PhysX Rigid Body and should give a warning if it is called against 
 unsupported type.
 
-**Important :** Currently ROS2 Gem is heavily dependent on PhysX5 (due to SDF importer). The decoupling of those needs to be done in the future.
+**Note:** Currently ROS2 Gem is heavily dependent on PhysX5 (due to SDF importer). The decoupling of those needs to be done in the future.
 
 ## DeleteEntity service
 
@@ -244,14 +240,14 @@ Service definition: [DeleteEntity.srv](https://github.com/adamdbrw/simulation_in
 
 The `AZ::EntityId` will be discovered by calling `SimulationInfoComponentRequestBus` with the name provided in the request. Next, the corresponding API will be called to despawn and remove the corresponding spawn ticket.
 
-**Important:** This mechanism will allow to delete the entities that are part of the level prefab (e.g., prefab instantiated in Editor).
+**Note:** This mechanism will allow to delete the entities that are part of the level prefab (e.g., prefab instantiated in Editor).
 
 ## GetEntityBounds service
 
 This service allows to get the bounds of the previously spawned entities. \
 Service definition: [GetEntityBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityBounds.srv)
 
-The bound for the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request.
+The bound for the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request. The information about entity's bounds will be stored within the `.simulationinfo` product asset, and it will be generated based on the source asset data provided by the simulation engineer.
 
 ## GetEntityInfo service
 
@@ -259,148 +255,53 @@ This service allows to get the category, description and tags for the given enti
 Service definition: [GetEntityInfo.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityInfo.srv) \
 Particular entity info definition: [EntityInfo.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/EntityInfo.msg)
 
-This information the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request.
+This information will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request.  The information will be stored within the `.simulationinfo` product asset, and it will be generated based on the source asset data provided by the simulation engineer.
 
 ## GetNamedPoses service
 
-Simulation expert using O3DE Editor can add entity with component from ROS2 gem called `Named Pose Editor Component`.
-This component will require `TransformService` and dependent services `BoxShapeService` and `SphereShapeService`
-The  `Named Pose Component` will contain two configurable fields called `description` and `tags`.
-During creation of game component (`CreateGameEntity`) the TagComponent from LmbrCentral gem will be created and fed with list of tags. 
-Creating the TagComponent is useful to make this feature compatible with O3DE's tag system.
-The box or sphere shape component allows to definition of optional boundaries around the named pose.
+This service allows to get the list of the predefined poses which are convenient to for spawning, navigation goals, etc. \
+Service definition: [GetNamedPoses.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetNamedPoses.srv) \
+Individual named pose definition: [NamedPose.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/NamedPose.msg)
 
-**Important** Convex hull bound shape will not be supported yet.
+This information will be obtained by calling a respective bus of `ROS 2 Named poses manager`. Additionally, the aggregation will be filtered based on the parameters of the call. The poses will be predefined by a simulation expert using O3DE Editor. In particular, each entity with `NamedPoseComponent` from ROS 2 Gem will be registered in the poses manager. The `NamedPoseComponent` will contain two configurable fields called `description` and `tags`. During creation of game component (`CreateGameEntity`) the `TagComponent` from `LmbrCentral` Gem will be created and fed with the list of tags. 
 
-Calling service `GetNamedPose` will discover those components and return their configuration.
-
-Service definition [GetNamedPoses.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetNamedPoses.srv):
-```
-# Get predefined poses which are convenient to for spawning, navigation goals etc.
-
-TagsFilter tags                                     # Tags filter to apply. Only named poses with matching tags field
-                                                    # will be returned. Can be empty (see TagsFilter).
-
----
-
-Result result
-NamedPose[] poses                                   # A list of predefined poses, which may be empty.
-```
-where: [TagsFilter.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/TagsFilter.msg),
-[NamedPose.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/NamedPose.msg):
-```
-# A named pose defined in the simulation for certain purposes such as spawning.
-
-string name                               # Unique name.
-string description                        # Description for the user, e.g. "near the charging station".
-string[] tags                             # Optional tags which can be used to determine the named pose
-                                          # purpose, for example: "spawn", "parking", "navigation_goal",
-                                          # as well as fitting entity types e.g. "drone", "turtlebot3".
-geometry_msgs/Pose pose                   # Pose relative to world, which can be used with SpawnEntity.srv.
-```
-
-During simulation entities with `Named Pose Component` will be discovered (e.g., using designated request bus or o3de tag system),
-the aggregation will be filtered and returned to the caller. 
-
-**Important** Since O3DE does not require those names to be unique, the ROS 2 gem needs to skip or extend the names of duplicates.
+**Note:** `ROS 2 Named poses manager` will ensure the names are unique (O3DE does not check for the name's uniqueness).
 
 ## GetNamedPoseBounds service
 
-Service allows to get boundaries defined in Named Pose.
+This service allows to get the boundaries defined in the predefined pose object. \
+Service definition [GetNamedPoseBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetNamedPoseBounds.srv) 
 
-Service definition [GetNamedPoseBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetNamedPoseBounds.srv):
-```
-# Get bounds for the named pose. This feature is available if GetSimulatorFeatures includes POSE_BOUNDS feature.
+The information about the boundaries will be obtained by calling a respective bus of `ROS 2 Named poses manager`. Additionally, the aggregation will be filtered based on the parameters of the call. The boundaries of the pose will be predefined by a simulation expert using O3DE Editor by adding `TransformService` and dependent services `BoxShapeService` and `SphereShapeService` alongside with the `NamedPoseComponent`.
 
-string name                                         # unique names (as returned from GetNamedPoses).
-
----
-
-Result result
-Bounds bounds                                       # bounds for the named pose.
-```
-
-It will expose data in the Named Pose Game Component and corresponding Shape Components.
+**Note:** Convex hull bound shape will not be supported in this implementation. This subject will be cover by another RFC when necessary.
 
 ## Reset Simulation service
 
-Allows ROS 2 user to reset the simulation.
+This service allows to reset the simulation via ROS 2 interface. \
+Service definition: [ResetSimulation.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/ResetSimulation.srv)
 
-Service definition [ResetSimulation.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/ResetSimulation.srv)
-```
-# Reset the simulation to the start, including the entire scene and the simulation time.
-# Objects that were dynamically spawned are de-spawned.
+This service will be handled by `ROS 2 Simulator manager`. It will use multiple APIs to give results.
 
-uint8 SCOPE_DEFAULT       = 0             # same as ALL.
-uint8 SCOPE_TIME          = 1             # Reset simulation time to start.
-uint8 SCOPE_STATE         = 2             # Reset state such as poses and velocities. This may include state randomization
-                                          # if such feature is available and turned on.
-uint8 SCOPE_SPAWNED       = 4             # De-spawns all spawned entities.
-uint8 SCOPE_ALL           = 255           # Fully resets simulation to the start, as if it was closed and launched again.
-
-uint8 scope                               # Scope of the reset. Note that simulators might only support some scopes.
-                                          # This is a bit field which may be checked for each scope e.g. scope & TIME.
-
----
-
-Result result
-```
-
-This service will need to use multiple APIs to give results.
-
-| Scope         | Planned API and usage                                                        |
-| ------------- | ---------------------------------------------------------------------------- |
-| SCOPE_ALL     | ConsoleRequestBus and `LoadLevel` command.                                   |
-| SCOPE_SPAWNED | Internal gem API to destroy all spawn tickets in ROS 2 Entities manager.     |
-| SCOPE_STATE   | Move all spawned entities to initial poses cached in ROS 2 Entities manager. |
-| SCOPE_TIME    | New ROS2Bus call                                                             |
+| Scope         | Planned API and usage                                                          |
+| ------------- | ------------------------------------------------------------------------------ |
+| SCOPE_ALL     | `ConsoleRequestBus` and `LoadLevel` command.                                   |
+| SCOPE_SPAWNED | Internal API to destroy all spawn tickets using `ROS 2 Entities manager`.      |
+| SCOPE_STATE   | Move all spawned entities to initial poses cached in `ROS 2 Entities manager`. |
+| SCOPE_TIME    | New call using `ROS2Bus`                                                       |
 
 ## SetSimulationState service
 
-Allows ROS 2 user to set the state of the simulation (STOPPED, PAUSED, PLAYING, QUITTING)
+This service allows to set the state of the simulation (*STOPPED*, *PAUSED*, *PLAYING*, *QUITTING*). \
+Service definition: [SimulationState](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulationState.msg)
 
-```
-# Change the simulation state
+This service will be handled by `ROS 2 Simulator manager`.
 
+The transition from *PLAYING* or *PAUSED* to *STOPPED* will trigger level reloading.
 
-SimulationState state                      # Target state to set for the simulation.
+The transition from *PLAYING* to *PAUSED* will ask the default physics scene to be disabled. It will stop movement of all PhysX articulations, rigid bodies (both kinematic and simulated), and characters, but some animations will be played. The transition from *PAUSED* to *PLAYING* will do the opposite.
 
----
-
-uint8 ALREADY_IN_TARGET_STATE   = 101      # Additional result type for this call, which means simulation was already
-                                           # in the target state (e.g. was already stopped when STOP was requested).
-uint8 STATE_TRANSITION_ERROR    = 102      # The simulator failed to transition to the target state. This might happen
-                                           # especially with the transition to PLAYING from STOPPED.
-                                           # See result.error_message for details.
-uint8 INCORRECT_TRANSITION      = 103      # Incorrect transition (pausing when in stopped state).
-
-Result result
-
-```
-where [SimulationState](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulationState.msg) is defined as:
-```
-# Simulation states used in SetSimulationState and returned in GetSimulationState
-
-uint8 STOPPED      = 0                 # Simulation is stopped, which is equivalent to pausing and resetting with ALL.
-                                       # This is typically the default state when simulator is launched.
-                                       # Stopped simulation can be played. It can also be paused, which means
-                                       # starting simulation in a paused state immediately,
-                                       # without any time steps for physics or simulated clock ticks.
-uint8 PLAYING      = 1                 # Simulation is playing, can be either paused or stopped.
-uint8 PAUSED       = 2                 # Simulation is paused, can be either stopped (which will reset it) or played.
-uint8 QUITTING     = 3                 # Closing the simulator application. Switching from PLAYING or PAUSED states
-                                       # is expected to stop the simulation first, and then exit.
-                                       # Simulation interfaces will become unavailable after quitting.
-                                       # Running simulation application is outside of the simulation interfaces as
-                                       # there is no service to handle the call when the simulator is not up.
-
-uint8 state
-```
-
-The transition from PLAYING to STOPPED will trigger level reloading. That will take a while to complete. \
-The transition from PLAYING to PAUSED will ask the default physics scene to be disabled. 
-It will stop movement of all PhysX articulations, rigid bodies (both kinematic and simulated), and characters, but some animations will be played.
-The transition from PLAYING to QUITTING will simply call:
+The transition from *PLAYING*, *PAUSED*, or *STOPPED* to *QUITTING* will call:
 ```cpp
  int* ptr = nullptr;
  *ptr= 99;
@@ -415,48 +316,44 @@ The ROS 2 Simulator manager will contain the state of the simulation and perform
 
 ## GetSimulationState service
 
-Allows ROS 2 user to get the current state of the simulation.
+This service allows to get the current state of the simulation. \
+Service definition: [GetSimulationState.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSimulationState.srv)
 
-Service definition [GetSimulationState.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetSimulationState.srv)
+This service will be handled by `ROS 2 Simulator manager`. If transition is in progress (e.g. reloading level or despawning), the old state will be returned.
 
-```
-# Gets the simulation state (paused, playing, stopped)
+# Deprecated components in ROS 2 Gem
 
----
-
-SimulationState state                      # Current state of the simulation.
-
-Result result
-```
-The ROS 2 Simulator manager will return current state.
-If transition is in progress (e.g. reloading level or despawning), the old state will be returned.
-
-
-
-## Deprecated components in ROS 2 Gem
-
-During this effort some components will be retired, and some moved outside of scope of supported and canonical repos.
+During this effort some components will be retired, and some moved outside of scope of supported and canonical repos. This is primarily caused by ROS 2 community retiring `gazebo_msgs`.
 
 ### ROS2SpawnerComponent
 
-The ROS2Spawner component will be retired and hidden away from users with the CMake variable.
-This component can co-exist with managers for Simulation Interfaces, but ROS 2 package that the ROS2Spawner requires will be removed from upcoming ROS 2 distribution (Kilted Kaiju).
-The said package (`gazebo_msgs`) will be replaced by `simulation_interfaces`.
-The component will be retired (instead of completely removed from the codebase) to make the transition to Simulation interfaces an easier experience.
-However, using ROS2Spawner component will require a few extra steps (after the EOL of the `gazebo_msgs` package):
+The `ROS2SpawnerComponent` can co-exist with managers for *Simulation Interfaces* proposed in this RFC, but ROS 2 dependencies (namely `gazebo_msgs`) will be removed from upcoming ROS 2 distribution (`Kilted Kaiju`). The component will be marked deprecated (instead of completely removed from the codebase) to make the transition to Simulation Interfaces an easier experience. The component will be hidden away from users with the *CMake variable*. This variable will be first set to *enabled* by default, and toggled to *disabled* after the deprecation period into the retirement period. Finally, the component will be completely removed from ROS 2 Gem. 
+
+**Note:** Additional message during the *configure* step will be shown to the user if `gazebo_msgs` package is not detected, but the *variable* is set *true*.
+
+Users of `Kilted Kaiju` (and newer) ROS 2 releases will be able to use the deprecated component by building the package manually in their custom ROS 2 workspace. This involves:
 - cloning and building the latest [gazebo_ros_pkgs/gazebo_msgs](https://github.com/ros-simulation/gazebo_ros_pkgs/tree/3.9.0/gazebo_msgs)
 - sourcing custom workspace
 - setting CMake flag
 - building ROS2 gem from source.
 
+The deprecation period and the retirement period of the component are yet to be decided.
+
 ### ROS2ContactSensorComponent
 
-This component's code also depends on [`gazebo_msgs`](https://github.com/ros-simulation/gazebo_ros_pkgs/blob/3.9.0/gazebo_msgs/msg/ContactState.msg).
-Since there is no equivalent message in simulation_interfaces component will be retired and hidden from Users with CMakeVariable.
-The steps to use this component will be the same as those in the ROS2SpawnerComponent.
+The `ROS2ContactSensorComponent` is independent of *Simulation Interfaces* proposed in this RFC, but ROS 2 dependencies (namely `gazebo_msgs`) will be removed from upcoming ROS 2 distribution (`Kilted Kaiju`). In particular, this component uses [`ContactState` message](https://github.com/ros-simulation/gazebo_ros_pkgs/blob/3.9.0/gazebo_msgs/msg/ContactState.msg). The component will be hidden away from users with the *CMake variable*. This variable will be first set to *enabled* by default, and toggled to *disabled* after the deprecation period into the retirement period. Finally, the component will be completely removed from ROS 2 Gem. 
 
-Note that the ROS 2 community probably propose suitable replacement messages in the future.
+**Note:** Additional message during the *configure* step will be shown to the user if `gazebo_msgs` package is not detected, but the *variable* is set *true*.
 
+Users of `Kilted Kaiju` (and newer) ROS 2 releases will be able to use the deprecated component by building the package manually in their custom ROS 2 workspace. This involves:
+- cloning and building the latest [gazebo_ros_pkgs/gazebo_msgs](https://github.com/ros-simulation/gazebo_ros_pkgs/tree/3.9.0/gazebo_msgs)
+- sourcing custom workspace
+- setting CMake flag
+- building ROS2 gem from source.
+
+The deprecation period and the retirement period of the component are yet to be decided.
+
+# Conclusions
 
 <!-- - Explain the technical portion of the work in enough detail that members can implement the feature. 
 
@@ -466,27 +363,26 @@ Note that the ROS 2 community probably propose suitable replacement messages in 
 
 - This should also provide detailed information on compatibility with different hardware platforms. -->
 
-
-### What are the advantages of the feature?
+## What are the advantages of the feature?
 <!-- - Explain the advantages for someone to use this feature -->
- - Leading standardization of simulation in the robotics domain,
- - easier usage of O3DE in robotics and ML pipelines,
- - improve the testability of the ROS 2 features,
- - adjustments to EOL of `gazebo_msgs`
+- Adoption of the simulation standard in the robotics domain in O3DE.
+- Improving the user experience of robotics and ML pipelines in O3DE.
+- Improvement of the ROS 2 features' testability.
+- Adjustments to the end-of-life of `gazebo_msgs`.
 
-### What are the disadvantages of the feature?
+## What are the disadvantages of the feature?
 <!-- - Explain any disadvantages for someone to use this feature -->
-Significant increase in code base size for ROS2 Gem.
+Significant increase in the code base size for ROS 2 Gem.
 
 ### How will this be implemented or integrated into the O3DE environment?
 <!-- - Explain how this will be integrated within codebase of O3DE and any special library or technical stack requirements. -->
-It was explained in great detail in the section [ROS 2 API](#ros-2-api).
+The *Simulation Interfaces* feature will build over the ROS 2 Gem. In particular, three separate tools for managing the *spawnables*, the simulation and the named poses will be implemented as O3DE *System Components*.  The tools will be callable using O3DE bus system and via ROS 2 middleware. The latter will be decoupled from the *Simulation Interfaces* implementation to ensure the system can be used with different frameworks in the future. More details about the design are given in section [ROS 2 API](#ros-2-api).
 
 
 ### Are there any alternatives to this feature?
 <!-- - Provide any other designs that have been considered. Explain what the impact might be to not doing this.
 - If there is any prior art or approaches with other frameworks in the same domain, explain how they may have solved this problem or implemented this feature. -->
-The effort needs to be taken to adjust the existing code to the deprecation of Gazebo Classic and `gazebo_msgs`.
+The effort needs to be taken to adjust the existing code to the deprecation of Gazebo Classic and `gazebo_msgs`. *ROS 2 Simulation Interfaces* are the upcoming simulation standard that was primarily designed by O3DE *sig-simulation* developers. It will be integrated into all simulation engines and, therefore, it makes no sense to 
 
 
 ### How will users learn this feature?
@@ -495,12 +391,13 @@ The effort needs to be taken to adjust the existing code to the deprecation of G
 - Explain how it would be taught to new and existing O3DE users.
 - Include any significant impacts to documentation such as; Required official video updates, required product screenshot updates (i.e. Editor UX changes), new documentation site sections.  -->
 
-- Posts by OpenRobotics and Robotec.AI in their social media
-- documentation in [o3de.org](o3de.org) and [docs.ros.org](https://docs.ros.org/en/jazzy/Tutorials/Advanced/Simulators/Simulation-Main.html) 
-- tutorials, conferences
+- Documentation in [o3de.org](o3de.org) and [docs.ros.org](https://docs.ros.org/en/jazzy/Tutorials/Advanced/Simulators/Simulation-Main.html).
+- Discord social platform of O3DE.
+- Posts by OpenRobotics and Robotec.ai in their social media.
+- Tutorials, conferences.
 
 ### Are there any open questions?
 
-- Handling integration of physics engine.
-- Timing of implementation and release.
-- Avoid coupling ROS2 Gem with PhysX5 Gem.
+- Handling integration with the physics engine.
+- Timing of the implementation and the release.
+- Avoid coupling ROS 2 Gem with PhysX5 Gem.
