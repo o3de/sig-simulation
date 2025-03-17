@@ -1,8 +1,12 @@
 # RFC Feature - Cleaning up Gems and Templates
 
-This RFC lists a set of proposed changes in simulation-related Gems and project Templates hosted within the [o3de-extras](https://github.com/o3de/o3de-extras) repository. The goal is to discuss and to justify the needed modifications. It is triggered by the issues with the maintenance and testing of the large amount of assets and codebase with each release.
+## Summary:
 
-The RFS briefly describes every simulation-related component and lists possible changes. It is important to note that the past releases of the Gems will be stored unchanged.
+This RFC lists a set of proposed changes in simulation-related Gems and project Templates hosted within the [o3de-extras](https://github.com/o3de/o3de-extras) repository. The goal is to discuss and to justify the needed modifications. It is triggered by the issues with the maintenance and testing of the large amount of assets and the codebase with each release.
+
+The RFC briefly describes every simulation-related component that already exists in the repository and lists possible changes. It is important to note that the past releases of the Gems will be stored unchanged.
+
+# Simulation-related Gems
 
 ## LevelGeoreferencing Gem
 
@@ -21,7 +25,7 @@ This Gem contains assets (meshes, textures and ready-to-use *prefabs*) of `Prote
 There are two gems with sample robots: `ProteusRobot` and `RosRobotSample`. Additionally, *Panda Franka* robot is included within `Ros2RoboticManipulationTemplate` project Template. We propose to create a new Gem, `RosRobotSamples`, with three sample robots: `Proteus`, `Panda Franka`, and `Husarion ROSBot XL`.
 
 #### Consequences for users
-All projects using `ProteusRobot` Gem will require an easy update: changing the required Gem name. All asset names and paths will remain unchanged.
+All projects using `ProteusRobot` Gem will require an easy update: changing the required Gem name. All asset names (*prefabs*) and paths will remain unchanged, but not necessarily names and paths of each low-level asset (a mesh file or a texture). There is a risk that someone in some project uses these. Such project will require manual fixes or old version of some Gems.
 
 ## ROS2 Gem
 
@@ -40,7 +44,7 @@ This Gem contains assets (meshes, textures and ready-to-use *prefabs*) of `ROSBo
 There are two gems with sample robots: `ProteusRobot` and `RosRobotSample`. Additionally, the *Panda Franka* robot is included in the `Ros2RoboticManipulationTemplate` project template. We propose to create a new Gem, `RosRobotSamples`, with three sample robots: `Proteus`, `Panda Franka`, and `Husarion ROSBot XL`.
 
 #### Impact for users
-All projects using `RosRobotSample` Gem will require an easy update: changing the required Gem name. All asset names and paths will remain unchanged.
+All projects using `RosRobotSample` Gem will require an easy update: changing the required Gem name. All asset names (*prefabs*) and paths will remain unchanged, but not necessarily names and paths of each low-level asset (a mesh file or a texture). There is a risk that someone in some project uses these. Such project will require manual fixes or old version of some Gems.
 
 ## WarehouseAssets Gem
 
@@ -78,10 +82,12 @@ The users will have to adapt the projects accordingly or use the old version of 
 This Gem contains assets (meshes, textures and ready-to-use *prefabs*) that can be used to create a very simple warehouse project suitable for robotic simulations.
 
 #### Proposed changes
-This Gem should be removed completely after `WarehouseAssets` Gem is optimized and can be used to generate a small and lightweight warehouse environment. This proposal is triggered by the fact that the assets in the Gem require some rework after the updates in the engine (in AssetProcessor).
+This Gem should be removed completely after `WarehouseAssets` Gem is optimized and can be used to generate a small and lightweight warehouse environment. This proposal is triggered by the fact that the assets in the Gem require some rework after the updates in the engine (in *AssetProcessor*).
 
 #### Impact for users
 The users will have to adapt the projects accordingly, or use the old version of the Gem (the old version contains errors when used with future O3DE 2505.x). The impact is unknown as the popularity of the Gem is not known, however, the low quality of the assets (and the incorrect scale) hints that the Gem is not used widely. We will create a set of *prefabs* with the same names in `WarehouseAssets` Gem to minimize the impact of this change.
+
+# Project templates
 
 ## Ros2FleetRobotTemplate project Template
 
@@ -116,3 +122,29 @@ The more detailed list of changes in assets:
 - `UR10` - assets will be removed
 - `UrdfImporter/panda` - assets will be moved to the newly created `RosRobotSamples` Gem
 - unused `DiffuseProbeGrids` will be removed
+
+# Conclusions
+
+## What are the advantages of the feature?
+
+The changes described in this RFC will simplify the maintenance of the existing assets in the [o3de-extras](https://github.com/o3de/o3de-extras) repository. More importantly, the names and the content will be easier to understand by the users, and the number of Gems will be reduced.
+
+## What are the disadvantages of the feature?
+
+Some assets will be moved between Gems and some names will change. The names and paths of the *prefab* will be kept, but not necessarily names and paths of each asset. Some assets will be removed. There is a risk that someone in some project uses low-level assets (a mesh file or a texture). Such project will require manual fixes or old version of some Gems.
+
+### How will this be implemented or integrated into the O3DE environment?
+
+All Gems and Templates described in this RFC are already integrated into O3DE environment.
+
+### Are there any alternatives to this feature?
+
+This RFC describes changes in the structure of the existing data. It is highly possible that other developers might have different opinions on the best structure for such assets. Please file your comments below if you believe some changes should be made.
+
+### How will users learn this feature?
+- Documentation in [o3de.org](o3de.org) and Release Notes of O3DE.
+- Discord social platform of O3DE.
+- Posts by O3DE and Robotec.ai in their social media.
+
+### Are there any open questions?
+
