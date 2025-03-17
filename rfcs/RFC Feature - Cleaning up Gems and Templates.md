@@ -25,7 +25,7 @@ This Gem contains assets (meshes, textures and ready-to-use *prefabs*) of `Prote
 There are two gems with sample robots: `ProteusRobot` and `RosRobotSample`. Additionally, *Panda Franka* robot is included within `Ros2RoboticManipulationTemplate` project Template. We propose to create a new Gem, `RosRobotSamples`, with three sample robots: `Proteus`, `Panda Franka`, and `Husarion ROSBot XL`.
 
 #### Consequences for users
-All projects using `ProteusRobot` Gem will require an easy update: changing the required Gem name. All asset names (*prefabs*) and paths will remain unchanged, but not necessarily names and paths of each low-level asset (a mesh file or a texture). There is a risk that someone in some project uses these. Such project will require manual fixes or old version of some Gems.
+All projects using `ProteusRobot` Gem will require an easy update: changing the required Gem name. All asset names (*prefabs*) and paths will remain unchanged, but not necessarily names and paths of each low-level asset (a mesh file or a texture). There is a risk that someone in some project uses these. Such project will require manual fixes or the old version of the Gem.
 
 ## ROS2 Gem
 
@@ -44,7 +44,7 @@ This Gem contains assets (meshes, textures and ready-to-use *prefabs*) of `ROSBo
 There are two gems with sample robots: `ProteusRobot` and `RosRobotSample`. Additionally, the *Panda Franka* robot is included in the `Ros2RoboticManipulationTemplate` project template. We propose to create a new Gem, `RosRobotSamples`, with three sample robots: `Proteus`, `Panda Franka`, and `Husarion ROSBot XL`.
 
 #### Impact for users
-All projects using `RosRobotSample` Gem will require an easy update: changing the required Gem name. All asset names (*prefabs*) and paths will remain unchanged, but not necessarily names and paths of each low-level asset (a mesh file or a texture). There is a risk that someone in some project uses these. Such project will require manual fixes or old version of some Gems.
+All projects using `RosRobotSample` Gem will require an easy update: changing the required Gem name. All asset names (*prefabs*) and paths will remain unchanged, but not necessarily names and paths of each low-level asset (a mesh file or a texture). There is a risk that someone in some project uses these. Such project will require manual fixes or the old version of the Gem.
 
 ## WarehouseAssets Gem
 
@@ -57,7 +57,7 @@ The meshes are not optimized for large warehouse environments and the warehouse 
 - modifying the sizes of warehouse elements to allow building warehouses of different dimensions
 
 #### Impact for users
-The existing *prefabs* will be modified in a way, to be interchangeable with the old ones. No actions from the users of `WarehouseAssets` will be needed.
+The existing *prefabs* will be modified in a way, to be interchangeable with the old ones. No actions from the users of `WarehouseAssets` will be needed, unless they do not use low-level assets (a mesh file or a texture) directly. All projects that use these will require manual fixes or the old version of the Gem. 
 
 ## WarehouseAutomation Gem
 
@@ -131,7 +131,7 @@ The changes described in this RFC will simplify the maintenance of the existing 
 
 ## What are the disadvantages of the feature?
 
-Some assets will be moved between Gems and some names will change. The names and paths of the *prefab* will be kept, but not necessarily names and paths of each asset. Some assets will be removed. There is a risk that someone in some project uses low-level assets (a mesh file or a texture). Such project will require manual fixes or old version of some Gems.
+Some assets will be moved between Gems and some names will change. The names and paths of the *prefab* will be kept, but not necessarily names and paths of each asset. Some assets will be removed. There is a risk that someone in some project uses low-level assets (a mesh file or a texture). Such project will require manual fixes or old versions of some Gems.
 
 ### How will this be implemented or integrated into the O3DE environment?
 
