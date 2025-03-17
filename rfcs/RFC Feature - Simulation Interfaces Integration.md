@@ -304,16 +304,8 @@ The transition from *PLAYING* or *PAUSED* to *STOPPED* will trigger level reload
 
 The transition from *PLAYING* to *PAUSED* will ask the default physics scene to be disabled. It will stop movement of all PhysX articulations, rigid bodies (both kinematic and simulated), and characters, but some animations will be played. The transition from *PAUSED* to *PLAYING* will do the opposite.
 
-The transition from *PLAYING*, *PAUSED*, or *STOPPED* to *QUITTING* will call:
-```cpp
- int* ptr = nullptr;
- *ptr= 99;
-```
-alternatively:
-```cpp
-#pragma clang diagnostic ignored "-Winfinite-recursion"
-auto exit = [&]() { exit(); }; exit();
-```
+The transition from *PLAYING*, *PAUSED*, or *STOPPED* to *QUITTING* will close simulator calling `ConsoleRequestBus` with `quit` command.
+
 
 The ROS 2 Simulator manager will contain the state of the simulation and perform necessary transitions.
 
