@@ -14,7 +14,7 @@ As a rule of thumb, receiving encouraging feedback from long-standing project de
 ### Summary:
 <!-- Single paragraph explanation of the feature -->
 
-This RFC is a follow-up to an effort at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1) to standardize simulation interfaces existing robotics simulators in [ROS 2](https://docs.ros.org/en/jazzy/index.html). Current implementation of similar interfaces is limited to `ROS2SpawnerComponent`, that utilizes *Gazebo* messages for ROS 2 communication. The messages were marked deprecated in the latest ROS 2 release and should be superseded. Proposed approach includes three new *Components* that will fulfill the design presented in [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1), and that are planned to be developed alongside updates to simulation interfaces. Backward compatibility will be ensured for `ROS2SpawnerComponent` and `ROS2ContactSensor` through CMake configuration with the deprecation information.
+This RFC is a follow-up to an effort at [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1) to standardize [ROS 2](https://docs.ros.org/en/jazzy/index.html) simulation interfaces for robotics simulators. Current implementation of similar interfaces is limited to `ROS2SpawnerComponent`, that utilizes *Gazebo* messages for ROS 2 communication. The messages were marked deprecated in the latest ROS 2 release and should be superseded. Proposed approach includes three new *Components* that will fulfill the design presented in [ros-simulation/simulation_interfaces](https://github.com/ros-simulation/simulation_interfaces/pull/1), and that are planned to be developed alongside updates to simulation interfaces. Backward compatibility will be ensured for `ROS2SpawnerComponent` and `ROS2ContactSensor` through CMake configuration with the deprecation information.
 
 
 ### What is the relevance of this feature?
@@ -39,7 +39,7 @@ The following terminology that was created in [RFC-410](https://github.com/ros-i
 | --------- | -------------------------------------------------------------------------------- |
 | Spawnable | Robot or other object that can be spawned in simulation runtime.                 |
 | Entity    | Spawned spawnable, it has a unique name.                                         |
-| Bound     | A region that is defined by an axis-aligned box shape, convex hull, or a sphere. |
+| Bounds    | A volume that is defined by an axis-aligned box shape, convex hull, or a sphere. |
 | NamedPose | SE3 (translation and rotation) transform with a unique name                      |
 | Tag       | A string that allows filtering entities and named poses                          |
 
@@ -52,6 +52,7 @@ The implementation will be split into three (or more) system components:
 We will decouple the implementation of those features from their ROS 2 interfaces. Every manager will expose public methods that:
 - will be callable from C++,
 - will be handled through dedicated ROS 2 interface and exposed as service.
+
 The purpose of that approach is to enable testability without the need for a ROS framework and ensure the whole system can be used with any middleware in the future. 
 
 # ROS 2 API
@@ -68,6 +69,7 @@ The following features are the subject of this RFC:
  - NAMED_POSES
  - POSE_BOUNDS
  - ENTITY_BOUNDS
+ - ENTITY_TAGS
 
  - ENTITY_STATE_LISTING
  - ENTITY_STATE_SETTING
@@ -75,11 +77,9 @@ The following features are the subject of this RFC:
  - SIMULATION_RESET
  - SIMULATION_RESET_TIME
  - SIMULATION_RESET_SPAWNED
- - SIMULATION_RESET_STATE
-
  - SIMULATION_PAUSE
 
-The features *SIMULATION_RESET_STATE*, *STEP_SIMULATION_SINGLE*, *STEP_SIMULATION_MULTIPLE*, *STEP_SIMULATION_ACTION* will be introduced in the next RFC since they require multiple changes in the *PhysX Gem* and *AzPhysics API*. Action [SimulateSteps.action](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/action/SimulateSteps.action) will not be supported.
+The features *STEP_SIMULATION_SINGLE*, *STEP_SIMULATION_MULTIPLE*, and *STEP_SIMULATION_ACTION* will be introduced in the next RFC since they require multiple changes in the *PhysX Gem* and *AzPhysics API*. Action [SimulateSteps.action](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/action/SimulateSteps.action) will not be supported.
 
 Only `[.spawnable]` format will be supported for spawning (field `spawn_formats` of [SimulatorFeatures.msg](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/msg/SimulatorFeatures.msg)). Other formats, such as `URDF` and `SDF`, are supported only in the Editor mode in ROS 2 Gem. Spawning `SDF` and `URDF` would require support for the Game mode:
  - handling mesh importing in game mode and preparing it to use with the *Mesh Feature Processor*,
@@ -121,6 +121,7 @@ A simulation interfaces user who calls the `GetSpawnables` service against GameL
    * the bound information copied from `Robots/FooRobot.SimulationInfo`,
    * tag list copied from `Robots/FooRobot.SimulationInfo`,
    * category copied from `Robots/FooRobot.SimulationInfo`.
+
 Prepared response will be returned to the ROS 2 user.
 
 ## SpawnEntity service
@@ -193,8 +194,8 @@ Some of those methods respect calls to `TranformComponentRequests`, but some of 
 | Kinematic PhysX Rigid Body              | supports                       |                         |            |
 | TransformComponent  due to parent-child | supports                       |                         |            |
 | TransformComponent (custom calls)       |                                |                         |            |
-| PhysX character component               |                                |                         | ?          |
-| PhysX ragdoll                           |                                |                         | ?          |
+| PhysX character component               |                                |                         | TBD        |
+| PhysX ragdoll                           |                                |                         | TBD        |
 | PhysX articulations                     |                                |                         | supports   |
 
 The correct API needs to be chosen to get the expected outcome it can be quite tricky.
@@ -240,14 +241,16 @@ Service definition: [DeleteEntity.srv](https://github.com/adamdbrw/simulation_in
 
 The `AZ::EntityId` will be discovered by calling `SimulationInfoComponentRequestBus` with the name provided in the request. Next, the corresponding API will be called to despawn and remove the corresponding spawn ticket.
 
-**Note:** This mechanism will allow to delete the entities that are part of the level prefab (e.g., prefab instantiated in Editor).
+**Note:** This mechanism will **not** allow to delete the entities that are the part of the level prefab (e.g., prefab instantiated in Editor).
 
 ## GetEntityBounds service
 
 This service allows to get the bounds of the previously spawned entities. \
 Service definition: [GetEntityBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetEntityBounds.srv)
 
-The bound for the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request. The information about entity's bounds will be stored within the `.simulationinfo` product asset, and it will be generated based on the source asset data provided by the simulation engineer.
+The bounds for the particular entity will be obtained by calling `SimulationInfoComponentRequestBus` with the name of the entity provided in the request. The information about entity's bounds will be stored within the `.simulationinfo` product asset, and it will be generated based on the source asset data provided by the simulation engineer.
+
+**Note:** Convex hull bounds shape will not be supported in this implementation. This subject will be cover by another RFC when necessary.
 
 ## GetEntityInfo service
 
@@ -269,12 +272,12 @@ This information will be obtained by calling a respective bus of `ROS 2 Named po
 
 ## GetNamedPoseBounds service
 
-This service allows to get the boundaries defined in the predefined pose object. \
+This service allows to get the bounds defined in the predefined pose object. \
 Service definition [GetNamedPoseBounds.srv](https://github.com/adamdbrw/simulation_interfaces/blob/simulation_interfaces/srv/GetNamedPoseBounds.srv) 
 
-The information about the boundaries will be obtained by calling a respective bus of `ROS 2 Named poses manager`. Additionally, the aggregation will be filtered based on the parameters of the call. The boundaries of the pose will be predefined by a simulation expert using O3DE Editor by adding `TransformService` and dependent services `BoxShapeService` and `SphereShapeService` alongside with the `NamedPoseComponent`.
+The information about the bounds will be obtained by calling a respective bus of `ROS 2 Named poses manager`. Additionally, the aggregation will be filtered based on the parameters of the call. The bounds of the pose will be predefined by a simulation expert using O3DE Editor by adding `TransformService` and dependent services `BoxShapeService` and `SphereShapeService` alongside with the `NamedPoseComponent`.
 
-**Note:** Convex hull bound shape will not be supported in this implementation. This subject will be cover by another RFC when necessary.
+**Note:** Convex hull bounds shape will not be supported in this implementation. This subject will be cover by another RFC when necessary.
 
 ## Reset Simulation service
 
@@ -329,12 +332,12 @@ During this effort some components will be retired, and some moved outside of sc
 
 The `ROS2SpawnerComponent` can co-exist with managers for *Simulation Interfaces* proposed in this RFC, but ROS 2 dependencies (namely `gazebo_msgs`) will be removed from upcoming ROS 2 distribution (`Kilted Kaiju`). The component will be marked deprecated (instead of completely removed from the codebase) to make the transition to Simulation Interfaces an easier experience. The component will be hidden away from users with the *CMake variable*. This variable will be first set to *enabled* by default, and toggled to *disabled* after the deprecation period into the retirement period. Finally, the component will be completely removed from ROS 2 Gem. 
 
-**Note:** Additional message during the *configure* step will be shown to the user if `gazebo_msgs` package is not detected, but the *variable* is set *true*.
+**Note:** Additional message during the *configure* step will be shown to the user if `gazebo_msgs` package is not detected, but the *variable* is set *enabled*.
 
 Users of `Kilted Kaiju` (and newer) ROS 2 releases will be able to use the deprecated component by building the package manually in their custom ROS 2 workspace. This involves:
 - cloning and building the latest [gazebo_ros_pkgs/gazebo_msgs](https://github.com/ros-simulation/gazebo_ros_pkgs/tree/3.9.0/gazebo_msgs)
 - sourcing custom workspace
-- setting CMake flag
+- setting *CMake variable* (after deprecation period)
 - building ROS2 gem from source.
 
 The deprecation period and the retirement period of the component are yet to be decided.
@@ -343,12 +346,12 @@ The deprecation period and the retirement period of the component are yet to be 
 
 The `ROS2ContactSensorComponent` is independent of *Simulation Interfaces* proposed in this RFC, but ROS 2 dependencies (namely `gazebo_msgs`) will be removed from upcoming ROS 2 distribution (`Kilted Kaiju`). In particular, this component uses [`ContactState` message](https://github.com/ros-simulation/gazebo_ros_pkgs/blob/3.9.0/gazebo_msgs/msg/ContactState.msg). The component will be hidden away from users with the *CMake variable*. This variable will be first set to *enabled* by default, and toggled to *disabled* after the deprecation period into the retirement period. Finally, the component will be completely removed from ROS 2 Gem. 
 
-**Note:** Additional message during the *configure* step will be shown to the user if `gazebo_msgs` package is not detected, but the *variable* is set *true*.
+**Note:** Additional message during the *configure* step will be shown to the user if `gazebo_msgs` package is not detected, but the *variable* is set to *enabled*.
 
 Users of `Kilted Kaiju` (and newer) ROS 2 releases will be able to use the deprecated component by building the package manually in their custom ROS 2 workspace. This involves:
 - cloning and building the latest [gazebo_ros_pkgs/gazebo_msgs](https://github.com/ros-simulation/gazebo_ros_pkgs/tree/3.9.0/gazebo_msgs)
 - sourcing custom workspace
-- setting CMake flag
+- setting *CMake variable* (after deprecation period)
 - building ROS2 gem from source.
 
 The deprecation period and the retirement period of the component are yet to be decided.
@@ -382,7 +385,9 @@ The *Simulation Interfaces* feature will build over the ROS 2 Gem. In particular
 ### Are there any alternatives to this feature?
 <!-- - Provide any other designs that have been considered. Explain what the impact might be to not doing this.
 - If there is any prior art or approaches with other frameworks in the same domain, explain how they may have solved this problem or implemented this feature. -->
-The effort needs to be taken to adjust the existing code to the deprecation of Gazebo Classic and `gazebo_msgs`. *ROS 2 Simulation Interfaces* are the upcoming simulation standard that was primarily designed by O3DE *sig-simulation* developers. It will be integrated into all simulation engines and, therefore, it makes no sense to 
+The effort needs to be taken to adjust the existing code to the deprecation of Gazebo Classic and `gazebo_msgs`. *ROS 2 Simulation Interfaces* are the upcoming simulation standard that was primarily designed by O3DE *sig-simulation* developers. It will be integrated into all major simulation engines and, therefore, should be integrated into O3DE.
+
+The proposed approach allows for a smooth transition from the previous implementation to the standard. We are open for suggestions on the architecture of the O3DE integration.
 
 
 ### How will users learn this feature?
