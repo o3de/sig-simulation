@@ -43,19 +43,20 @@ While it is convenient for the users to add one Gem to their simulation projects
 
 Three Gems will be separated from the existing codebase of _ROS2_ Gem:
 
-| Gem name            | Description                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| _ROS2_              | Base Gem for any _ROS 2_ based Gem/project, including:                                     |
-|                     | - _ROS 2 Node_ (singleton) allowing the communication with the _ROS 2_ ecosystem           |
-|                     | - automated handling of simulation time                                                    |
-|                     | - handling of transformation frames                                                        |
-|                     | - handling ROS 2 _namespaces_ and ROS 2 _topics_                                           |
-|                     | - dynamic objects spawning via ROS 2 _services_                                            |
-| _ROS2Sensors_       | Gem interfacing with _ROS 2_ ecosystem implementing the following simulation sensors:      |
-|                     | camera, contact, GNSS, imu, lidar, odometry                                                |
-| _ROS2Controllers_   | Gem interfacing with _ROS 2_ ecosystem implementing robot control, manipulation, grippers, |
-|                     | and vehicle dynamics                                                                       |
-| _ROS2RobotImporter_ | Gem implementing robot importer tool using _ROS 2_ components                              |
+| Gem name            | Description                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------- |
+| _ROS2_              | Base Gem for any _ROS 2_ based Gem/project, including:                                          |
+|                     | - _ROS 2 Node_ (singleton) allowing the communication with the _ROS 2_ ecosystem                |
+|                     | - automated handling of simulation time                                                         |
+|                     | - handling of transformation frames                                                             |
+|                     | - handling ROS 2 _namespaces_ and ROS 2 _topics_                                                |
+|                     | - dynamic objects spawning via ROS 2 _services_                                                 |
+|                     | - base components (e.g. for sensors that can be implemented in any Gem)                         |
+| _ROS2Sensors_       | Gem interfacing with _ROS 2_ ecosystem implementing the following simulation sensors:           |
+|                     | camera, contact, GNSS, imu, lidar, odometry                                                     |
+| _ROS2Controllers_   | Gem interfacing with _ROS 2_ ecosystem implementing robot control, manipulation, grippers,      |
+|                     | and vehicle dynamics; it will also include sensors related to controllers (e.g. wheel odometry) |
+| _ROS2RobotImporter_ | Gem implementing robot importer tool using _ROS 2_ components                                   |
 
 > Note: the _contact_ sensor (within _ROS2Sensors_ Gem) and the _spawner_ component (_ROS2_ Gem) will be marked deprecated, as explained in [RFC : Simulation interfaces](https://github.com/o3de/sig-simulation/pull/95).
 
@@ -114,11 +115,12 @@ Additionally, an API to create components that can be loaded by the importer wil
 The implementation of this refactor will take place on a separate branch on `o3de-extras` repository. The following steps will take place:
 1. Creating new empty Gems
 2. Disabling sensor and plugin _hooks_ from _Robot Importer_ tool in _ROS2_ Gem
-3. Moving the content of _ROS2Sensors_ from _ROS2_ Gem to the new Gem
-4. Moving the content of _ROS2Controllers_ from _ROS2_ Gem to the new Gem
-5. Moving the _Robot Importer_ tool from _ROS2_ Gem to the new Gem
-6. Implementing new API in _ROS2Sensors_ and _ROS2Controllers_
-7. Enabling back sensor and plugin _hooks_ in _ROS2RobotImporter_ Gem
+4. Moving the content of _ROS2Sensors_ from _ROS2_ Gem to the new Gem
+5. Moving the content of _ROS2Controllers_ from _ROS2_ Gem to the new Gem
+6. Moving the _Robot Importer_ tool from _ROS2_ Gem to the new Gem
+7. Regenerating _ROS2_ Gem to ensure it matches current O3DE (new CMakeFiles, etc.)
+8. Implementing new API in _ROS2Sensors_ and _ROS2Controllers_
+9. Enabling back sensor and plugin _hooks_ in _ROS2RobotImporter_ Gem
 
 # Conclusions
 
@@ -146,7 +148,7 @@ There are two disadvantages of the proposed refactor.
 
 ### How will this be implemented or integrated into the O3DE environment?
 <!-- - Explain how this will be integrated within codebase of O3DE and any special library or technical stack requirements. -->
-The proposed refactor will make use of the existing O3DE mechanisms, such as _gems_ to make the simulation structure modular, _busses_ for the communication and _serialize context_ for feature registration. No changes in O3DE environment are required for the proposed implementation. I.e., this RFC is limited to `o3de-extras` repository.
+The proposed refactor will make use of the existing O3DE mechanisms, such as _gems_ to make the simulation structure modular, _buses_ for the communication and _serialize context_ for feature registration. No changes in O3DE environment are required for the proposed implementation. I.e., this RFC is limited to `o3de-extras` repository.
 
 Additional changes will be required for the follow-ups only.
 
